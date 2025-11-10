@@ -68,7 +68,7 @@
       <section class="player__content">
         <div class="player__stage">
           <video id="player" class="video" controls preload="metadata" poster="./assets/img/placeholder.svg">
-            <source src="" type="video/mp4" />
+            <source id="playerSource" src="" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
@@ -80,10 +80,9 @@
         </div>
 
         <section id="tab-overview" class="tabpane is-active" role="tabpanel" aria-labelledby="tab-overview-btn">
-          <h1>Intro to Data Science</h1>
-          <p>Start your data journey: learn Python, data manipulation, visualization, and basic machine learning concepts through hands-on projects.</p>
-          <ul class="bullets">
-            <li>No prior experience required</li>
+          <h1 id="courseTitle">Course Title</h1>
+          <p id="courseDesc">Overview will be loaded from data.</p>
+          <ul class="bullets" id="courseBullets">
             <li>Hands-on labs and quizzes</li>
             <li>Certificate upon completion</li>
           </ul>
@@ -91,13 +90,7 @@
 
         <section id="tab-curriculum" class="tabpane" role="tabpanel" aria-labelledby="tab-curriculum-btn">
           <h2>Curriculum</h2>
-          <ul class="list">
-            <li>Module 1 — Orientation and setup</li>
-            <li>Module 2 — Python refresher</li>
-            <li>Module 3 — NumPy arrays</li>
-            <li>Module 4 — Pandas DataFrames</li>
-            <li>Module 5 — Visualization basics</li>
-          </ul>
+          <ul class="list" id="curriculumList"></ul>
         </section>
 
         <section id="tab-resources" class="tabpane" role="tabpanel" aria-labelledby="tab-resources-btn">
@@ -127,7 +120,7 @@
       </div>
     </footer>
 
+    <script src="./assets/js/courses.data.js"></script>
     <script src="./assets/js/app.js"></script>
   </body>
   </html>
-

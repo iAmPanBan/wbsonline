@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="Code editor illustration">
+  <defs>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f0fffe"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="640" height="360" rx="16" fill="url(#g2)"/>
+  <rect x="60" y="60" width="520" height="240" rx="12" fill="#0E898E" opacity="0.08" stroke="#e5e7eb"/>
+  <rect x="80" y="80" width="480" height="40" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+  <circle cx="100" cy="100" r="6" fill="#ef4444"/>
+  <circle cx="120" cy="100" r="6" fill="#f59e0b"/>
+  <circle cx="140" cy="100" r="6" fill="#10b981"/>
+  <rect x="80" y="130" width="220" height="150" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+  <rect x="310" y="130" width="250" height="150" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+  <rect x="95" y="145" width="180" height="12" rx="6" fill="#0E898E" opacity="0.35"/>
+  <rect x="95" y="165" width="140" height="10" rx="5" fill="#0E898E" opacity="0.22"/>
+  <rect x="95" y="183" width="160" height="10" rx="5" fill="#0E898E" opacity="0.22"/>
+  <rect x="95" y="201" width="120" height="10" rx="5" fill="#0E898E" opacity="0.22"/>
+  <rect x="325" y="145" width="120" height="80" rx="8" fill="#0E898E" opacity="0.12"/>
+  <rect x="455" y="145" width="90" height="80" rx="8" fill="#0E898E" opacity="0.12"/>
+  <rect x="325" y="235" width="220" height="30" rx="8" fill="#0E898E" opacity="0.2"/>
+</svg>
+
