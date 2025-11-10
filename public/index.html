@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LMS Dashboard</title>
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <link rel="icon" href="./assets/img/logo.svg" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <a class="brand" href="index.html">
+          <img src="./assets/img/logo.svg" alt="LMS" class="brand__logo" />
+          <span class="brand__name">Lernio</span>
+        </a>
+        <div class="search">
+          <span class="search__icon" aria-hidden="true">🔎</span>
+          <input id="globalSearch" type="search" placeholder="Search courses" aria-label="Search courses" />
+        </div>
+        <nav class="nav">
+          <a class="nav__link nav__link--active" href="index.html">Dashboard</a>
+          <a class="nav__link" href="courses.html">Courses</a>
+          <a class="nav__link" href="#">My Learning</a>
+        </nav>
+        <button class="avatar" aria-label="Account">
+          <span>A</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="container page">
+      <section class="hero">
+        <div class="hero__content">
+          <h1>Welcome back, Alex</h1>
+          <p>Continue where you left off or discover something new.</p>
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="courses.html">Browse Courses</a>
+            <a class="btn" href="#enrolled">My Learning</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="continue-title">
+        <div class="section__header">
+          <h2 id="continue-title">Continue Learning</h2>
+          <a class="link" href="courses.html">View all</a>
+        </div>
+        <div class="grid grid--cards">
+          <article class="card card--course">
+            <a href="course.html" class="card__media">
+              <img src="./assets/img/placeholder.svg" alt="Course cover" />
+            </a>
+            <div class="card__body">
+              <h3 class="card__title"><a href="course.html">Intro to Data Science</a></h3>
+              <p class="card__meta">Beginner • 24 lessons</p>
+              <div class="progress">
+                <div class="progress__bar" style="width: 45%"></div>
+              </div>
+              <div class="card__actions">
+                <a class="btn btn--primary" href="course.html">Continue</a>
+                <span class="badge">45% complete</span>
+              </div>
+            </div>
+          </article>
+          <article class="card card--course">
+            <a href="course.html" class="card__media">
+              <img src="./assets/img/placeholder.svg" alt="Course cover" />
+            </a>
+            <div class="card__body">
+              <h3 class="card__title"><a href="course.html">Full‑Stack Web Development</a></h3>
+              <p class="card__meta">Intermediate • 36 lessons</p>
+              <div class="progress">
+                <div class="progress__bar" style="width: 72%"></div>
+              </div>
+              <div class="card__actions">
+                <a class="btn btn--primary" href="course.html">Continue</a>
+                <span class="badge">72% complete</span>
+              </div>
+            </div>
+          </article>
+          <article class="card card--course">
+            <a href="course.html" class="card__media">
+              <img src="./assets/img/placeholder.svg" alt="Course cover" />
+            </a>
+            <div class="card__body">
+              <h3 class="card__title"><a href="course.html">Product Management Foundations</a></h3>
+              <p class="card__meta">Beginner • 18 lessons</p>
+              <div class="progress">
+                <div class="progress__bar" style="width: 15%"></div>
+              </div>
+              <div class="card__actions">
+                <a class="btn btn--primary" href="course.html">Continue</a>
+                <span class="badge">15% complete</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="enrolled" class="section" aria-labelledby="enrolled-title">
+        <div class="section__header">
+          <h2 id="enrolled-title">Your Enrolled Courses</h2>
+          <a class="link" href="courses.html">Explore more</a>
+        </div>
+        <div class="grid grid--cards">
+          <article class="card card--course">
+            <a href="course.html" class="card__media">
+              <img src="./assets/img/placeholder.svg" alt="Course cover" />
+            </a>
+            <div class="card__body">
+              <h3 class="card__title"><a href="course.html">Cloud Fundamentals</a></h3>
+              <p class="card__meta">Beginner • 20 lessons</p>
+              <div class="card__actions">
+                <a class="btn" href="course.html">Open</a>
+              </div>
+            </div>
+          </article>
+          <article class="card card--course">
+            <a href="course.html" class="card__media">
+              <img src="./assets/img/placeholder.svg" alt="Course cover" />
+            </a>
+            <div class="card__body">
+              <h3 class="card__title"><a href="course.html">GenAI for Everyone</a></h3>
+              <p class="card__meta">Beginner • 12 lessons</p>
+              <div class="card__actions">
+                <a class="btn" href="course.html">Open</a>
+              </div>
+            </div>
+          </article>
+          <article class="card card--course">
+            <a href="course.html" class="card__media">
+              <img src="./assets/img/placeholder.svg" alt="Course cover" />
+            </a>
+            <div class="card__body">
+              <h3 class="card__title"><a href="course.html">SQL Essentials</a></h3>
+              <p class="card__meta">Beginner • 14 lessons</p>
+              <div class="card__actions">
+                <a class="btn" href="course.html">Open</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <p>© <span id="year"></span> Lernio LMS</p>
+        <nav class="footer__nav">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Support</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="./assets/js/app.js"></script>
+  </body>
+  </html>
+
