@@ -15,7 +15,7 @@
   const courseLink = (id) => `course.html?id=${encodeURIComponent(id)}`;
 
   function courseCard(course, opts = {}) {
-    const { showProgress = false, cta = 'Enroll' } = opts;
+    const { showProgress = false, cta = 'Enrol' } = opts;
     const progressHtml = showProgress && course.progress
       ? `<div class="progress"><div class="progress__bar" style="width: ${course.progress}%"></div></div>
          <span class="badge">${course.progress}% complete</span>`
@@ -56,7 +56,7 @@
   function renderCourseGrid() {
     if (!courseGrid || !Array.isArray(window.COURSES)) return;
     courseGrid.innerHTML = window.COURSES
-      .map((c) => courseCard(c, { cta: c.enrolled ? 'Open' : 'Enroll' }))
+      .map((c) => courseCard(c, { cta: 'Enroll' }))
       .join('');
     applyFilters();
   }
@@ -286,7 +286,7 @@
             <h3 class="program-card__title">${p.title}</h3>
             <div class="program-card__meta">${p.duration} · ${p.mode} · ${p.schedule}</div>
             <div class="program-card__actions">
-              <a class="btn" href="${link}">View Program</a>
+              <a class="btn btn--primary" href="${link}">Enroll</a>
             </div>
           </div>
         </article>
@@ -326,6 +326,35 @@
     const grid = document.getElementById('popularGrid');
     if (!grid || !Array.isArray(window.COURSES)) return;
     const popular = window.COURSES.slice(0, 12);
-    grid.innerHTML = popular.map((c) => courseCard(c, { cta: c.enrolled ? 'Open' : 'Enroll' })).join('');
+    grid.innerHTML = popular.map((c) => courseCard(c, { cta: 'Enroll' })).join('');
+  })();
+
+  // Testimonial carousel
+  (function initTestimonial() {
+    const root = document.getElementById('tcarousel');
+    if (!root) return;
+    const slides = Array.from(root.querySelectorAll('.tslide'));
+    const dots = Array.from(root.querySelectorAll('.tdot'));
+    const prev = document.getElementById('tprev');
+    const next = document.getElementById('tnext');
+    let idx = 0;
+    let timer = null;
+
+    function show(i) {
+      idx = (i + slides.length) % slides.length;
+      slides.forEach((s, j) => s.classList.toggle('is-active', j === idx));
+      dots.forEach((d, j) => d.classList.toggle('is-active', j === idx));
+    }
+    function start() { timer = setInterval(() => show(idx + 1), 6000); }
+    function stop() { if (timer) clearInterval(timer); timer = null; }
+
+    if (prev) prev.addEventListener('click', () => { stop(); show(idx - 1); start(); });
+    if (next) next.addEventListener('click', () => { stop(); show(idx + 1); start(); });
+    dots.forEach((d) => d.addEventListener('click', () => { stop(); show(parseInt(d.getAttribute('data-index') || '0', 10)); start(); }));
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', start);
+
+    show(0);
+    start();
   })();
 })();

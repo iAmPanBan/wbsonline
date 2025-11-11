@@ -8,7 +8,7 @@
   --color-accent: #5ABFC4;   /* light teal */
   --color-accent-2: #BEFCFE; /* ultra light cyan */
   --color-warm: #FF8946;     /* orange highlight */
-  --color-bg: #ffffff;
+  --color-bg: #e6f4f1;
   --color-surface: #ffffff;
   --color-muted: #6b7280;
   --color-text: #0f172a;
@@ -155,6 +155,27 @@ a:hover { text-decoration: underline; }
 .avatar-dot { width: 28px; height: 28px; border-radius: 999px; display: grid; place-items: center; background: color-mix(in oklab, var(--color-primary) 22%, white); color: var(--color-primary); font-weight: 800; font-size: .8rem; border: 1px solid var(--color-border); }
 .btn.btn--dark { background: var(--color-primary-900); border-color: var(--color-primary-900); color: #fff; }
 .btn.btn--dark:hover { background: var(--color-primary-800); border-color: var(--color-primary-800); }
+
+/* Testimonial slider */
+.testimonial .tcarousel { position: relative; border: 1px solid var(--color-border); border-radius: var(--radius); background: #fff; box-shadow: var(--shadow-sm); overflow: hidden; }
+.testimonial .tgrid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 18px; align-items: center; padding: 18px 72px 22px; }
+.testimonial .tquote { margin: 0 0 10px; font-size: clamp(1.2rem, 1.2vw + 1rem, 1.8rem); line-height: 1.25; }
+.testimonial .tbody { margin: 0 0 14px; color: var(--color-muted); }
+.testimonial .tauthor__name { font-weight: 800; }
+.testimonial .tauthor__meta { color: var(--color-muted); font-size: .9rem; }
+.testimonial .tmedia img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; border: 1px solid var(--color-border); }
+.testimonial .tbadge { position: absolute; margin-top: -46px; transform: translateX(12px); background: rgba(255,255,255,.9); border: 1px solid var(--color-border); border-radius: 999px; padding: 8px 12px; text-decoration: none; color: var(--color-text); font-weight: 700; box-shadow: var(--shadow-sm); }
+.testimonial .tslide { display: none; }
+.testimonial .tslide.is-active { display: block; }
+.testimonial .tnav { position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; border: 0; background: color-mix(in oklab, var(--color-primary) 12%, white); color: var(--color-primary); display: grid; place-items: center; cursor: pointer; box-shadow: var(--shadow-sm); z-index: 5; }
+.testimonial .tnav--prev { left: 10px; }
+.testimonial .tnav--next { right: 10px; }
+.testimonial .tdots { position: absolute; left: 14px; bottom: 10px; display: inline-flex; gap: 6px; }
+.testimonial .tdot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid var(--color-border); background: #fff; }
+.testimonial .tdot.is-active { background: var(--color-primary); border-color: var(--color-primary); }
+@media (max-width: 860px) {
+  .testimonial .tgrid { grid-template-columns: 1fr; padding-left: 56px; padding-right: 56px; }
+}
 
 /* Grid + Cards */
 .grid { display: grid; gap: 16px; }
