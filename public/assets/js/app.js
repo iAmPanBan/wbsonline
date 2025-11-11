@@ -265,4 +265,67 @@
     show(0);
     start();
   })();
+
+  // Top-rated programs rendering and filtering
+  (function initPrograms() {
+    const grid = document.getElementById('programGrid');
+    const sidebar = document.querySelector('#programCategories')?.closest('.sidebar');
+    const showMoreBtn = document.querySelector('#programCategories .sidebar__item[data-role="show-more"]');
+    const catButtons = Array.from(document.querySelectorAll('#programCategories .sidebar__item:not([data-role="show-more"])'));
+    if (!grid || !Array.isArray(window.TOP_PROGRAMS)) return;
+
+    function card(p) {
+      const link = p.courseId ? `course.html?id=${encodeURIComponent(p.courseId)}` : (p.link || 'courses.html');
+      return `
+        <article class="program-card">
+          <a href="${link}" class="program-card__media">
+            <img src="${p.image}" alt="${p.title}" />
+          </a>
+          <div class="program-card__body">
+            <div class="program-card__provider">${p.provider}</div>
+            <h3 class="program-card__title">${p.title}</h3>
+            <div class="program-card__meta">${p.duration} · ${p.mode} · ${p.schedule}</div>
+            <div class="program-card__actions">
+              <a class="btn" href="${link}">View Program</a>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function render(category) {
+      const list = category && category !== 'Popular Courses'
+        ? window.TOP_PROGRAMS.filter((p) => p.category === category)
+        : window.TOP_PROGRAMS.slice(0, 6);
+      grid.innerHTML = list.map(card).join('');
+    }
+
+    render('Popular Courses');
+
+    catButtons.forEach((btn) => btn.addEventListener('click', () => {
+      catButtons.forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      render(btn.getAttribute('data-cat') || 'Popular Courses');
+    }));
+
+    if (showMoreBtn && sidebar) {
+      showMoreBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('is-expanded');
+        const expanded = sidebar.classList.contains('is-expanded');
+        showMoreBtn.setAttribute('aria-expanded', String(expanded));
+        const icon = showMoreBtn.querySelector('.icon');
+        const label = showMoreBtn.querySelector('.label');
+        if (icon) icon.textContent = expanded ? '−' : '＋';
+        if (label) label.textContent = expanded ? 'Show less' : 'Show more';
+      });
+    }
+  })();
+
+  // Popular Courses section (catalog preview)
+  (function initPopularCourses() {
+    const grid = document.getElementById('popularGrid');
+    if (!grid || !Array.isArray(window.COURSES)) return;
+    const popular = window.COURSES.slice(0, 12);
+    grid.innerHTML = popular.map((c) => courseCard(c, { cta: c.enrolled ? 'Open' : 'Enroll' })).join('');
+  })();
 })();

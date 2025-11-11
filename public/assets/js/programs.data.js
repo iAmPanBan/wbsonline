@@ -1,0 +1,135 @@
+// Top-rated programs data (dummy, categorized similar to Great Learning)
+window.TOP_PROGRAMS = [
+  {
+    id: 'pg-ai-ml-business',
+    title: 'PG Program in Artificial Intelligence and Machine Learning: Business Applications',
+    provider: 'McCombs School of Business',
+    category: 'AI & Machine Learning',
+    duration: '7 months',
+    mode: 'Online',
+    schedule: 'Weekend',
+    image: './assets/img/placeholder.svg',
+    link: 'courses.html',
+    courseId: 'intro-data-science'
+  },
+  {
+    id: 'cloud-architect',
+    title: 'Cloud Solutions Architect Program',
+    provider: 'Professional Education',
+    category: 'Cloud Computing',
+    duration: '20 Weeks',
+    mode: 'Live Online',
+    schedule: 'Weekend',
+    image: './assets/img/placeholder.svg',
+    link: 'courses.html',
+    courseId: 'cloud-fundamentals'
+  },
+  {
+    id: 'cyber-defense',
+    title: 'Cyber Security: Defense and Operations',
+    provider: 'Security Institute',
+    category: 'Cyber Security',
+    duration: '18 Weeks',
+    mode: 'Online',
+    schedule: 'Self-paced',
+    image: './assets/img/placeholder.svg',
+    link: 'courses.html',
+    courseId: 'cloud-security'
+  },
+  {
+    id: 'devops-pro',
+    title: 'DevOps Professional Certificate',
+    provider: 'Tech Program',
+    category: 'DevOps',
+    duration: '14 Weeks',
+    mode: 'Online',
+    schedule: 'Weekdays',
+    image: './assets/img/placeholder.svg',
+    link: 'courses.html',
+    courseId: 'kubernetes-fundamentals'
+  },
+  {
+    id: 'digital-marketing',
+    title: 'Digital Marketing Strategy and Analytics',
+    provider: 'Business School',
+    category: 'Digital Marketing',
+    duration: '10 Weeks',
+    mode: 'Online',
+    schedule: 'Self-paced',
+    image: './assets/img/placeholder.svg',
+    link: 'courses.html',
+    courseId: 'product-management-foundations'
+  },
+  {
+    id: 'product-management',
+    title: 'Product Management: Roadmaps to Launch',
+    provider: 'Professional Education',
+    category: 'Product Management',
+    duration: '12 Weeks',
+    mode: 'Live Online',
+    schedule: 'Weekend',
+    image: './assets/img/placeholder.svg',
+    link: 'courses.html',
+    courseId: 'product-management-foundations'
+  },
+  {
+    id: 'no-code-ai-ml',
+    title: 'No Code AI and Machine Learning: Building Data Science Solutions',
+    provider: 'MIT Professional Education',
+    category: 'AI & Machine Learning',
+    duration: '12 Weeks',
+    mode: 'Online',
+    schedule: 'Weekend',
+    image: './assets/img/placeholder.svg',
+    link: 'courses.html',
+    courseId: 'machine-learning-engineer'
+  },
+  {
+    id: 'applied-ai-ds',
+    title: 'Applied AI and Data Science Program',
+    provider: 'MIT Professional Education',
+    category: 'Data Science & Analytics',
+    duration: '14 Weeks',
+    mode: 'Live Online',
+    schedule: 'Weekdays & Weekend',
+    image: './assets/img/placeholder.svg',
+    link: 'courses.html',
+    courseId: 'sql-essentials'
+  },
+  {
+    id: 'genai-productivity',
+    title: 'Generative AI for Productivity and Automation',
+    provider: 'Professional Education',
+    category: 'Generative AI',
+    duration: '8 Weeks',
+    mode: 'Online',
+    schedule: 'Self-paced',
+    image: './assets/img/placeholder.svg',
+    link: 'courses.html',
+    courseId: 'nlp-transformers'
+  },
+  {
+    id: 'software-engineering',
+    title: 'Software Engineering Immersive',
+    provider: 'Tech Program',
+    category: 'Software & Tech',
+    duration: '16 Weeks',
+    mode: 'Live Online',
+    schedule: 'Weekdays',
+    image: './assets/img/placeholder.svg',
+    link: 'courses.html',
+    courseId: 'fullstack-web-dev'
+  },
+  {
+    id: 'doctorate-data',
+    title: 'Doctorate in Data and Decision Sciences',
+    provider: 'Graduate School',
+    category: 'Doctorate',
+    duration: '3 Years',
+    mode: 'Hybrid',
+    schedule: 'Weekend',
+    image: './assets/img/placeholder.svg',
+    link: 'courses.html',
+    courseId: 'advanced-algorithms'
+  }
+];
