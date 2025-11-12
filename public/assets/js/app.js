@@ -212,6 +212,43 @@
     });
   }
 
+  // Sign-in modal logic
+  (function initSigninModal() {
+    const modal = byId('signinModal');
+    const openBtn = byId('signinBtn');
+    if (!modal || !openBtn) return;
+    const backdrop = modal.querySelector('.modal__backdrop');
+    const closeBtns = Array.from(modal.querySelectorAll('[data-action="close"]'));
+    const form = byId('signinForm');
+    const email = byId('signinEmail');
+    const pass = byId('signinPass');
+    const err = byId('signinError');
+
+    function open() { modal.classList.add('is-open'); document.body.style.overflow = 'hidden'; (email||{}).focus?.(); }
+    function close() { modal.classList.remove('is-open'); document.body.style.overflow = ''; }
+
+    openBtn.addEventListener('click', (e) => { e.preventDefault(); open(); });
+    (backdrop) && backdrop.addEventListener('click', close);
+    closeBtns.forEach((b) => b.addEventListener('click', close));
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        err.textContent = '';
+        const vEmail = (email?.value || '').trim();
+        const vPass = (pass?.value || '').trim();
+        if (!vEmail || !vPass) {
+          err.textContent = 'Please enter your email and password.';
+          return;
+        }
+        // Simulate auth success; store user and redirect
+        try { localStorage.setItem('lernioUser', JSON.stringify({ email: vEmail })); } catch {}
+        window.location.href = 'dashboard.html';
+      });
+    }
+  })();
+
   // Carousel (homepage)
   (function initCarousel() {
     const viewport = byId('carousel');

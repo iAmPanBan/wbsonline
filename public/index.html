@@ -23,7 +23,7 @@
           <a class="nav__link" href="courses.html">Courses</a>
         </nav>
         <div class="auth">
-          <a class="btn btn--primary" href="#">Sign in</a>
+          <a id="signinBtn" class="btn btn--primary" href="#">Sign in</a>
         </div>
       </div>
     </header>
@@ -323,6 +323,40 @@
         </div>
       </div>
     </footer>
+
+    <!-- Sign-in Modal -->
+    <div id="signinModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="signin-title">
+      <div class="modal__backdrop" data-action="close"></div>
+      <div class="modal__dialog" role="document">
+        <button class="modal__close" data-action="close" aria-label="Close">×</button>
+        <div class="modal__grid">
+          <div class="modal__left">
+            <h3 class="modal__welcome">Hey there! Welcome back.</h3>
+            <div class="modal__art">
+              <img src="./assets/img/slide3.svg" alt="Welcome" />
+            </div>
+          </div>
+          <div class="modal__right">
+            <h3 id="signin-title">Login</h3>
+            <form id="signinForm">
+              <label class="field">
+                <span class="field__label">Email</span>
+                <input id="signinEmail" type="email" placeholder="you@example.com" required />
+              </label>
+              <label class="field">
+                <span class="field__label">Password</span>
+                <input id="signinPass" type="password" placeholder="Enter your password" required />
+              </label>
+              <div class="form__row">
+                <a href="#" class="link">Forgot Password?</a>
+              </div>
+              <div id="signinError" class="form__error" role="alert" aria-live="polite"></div>
+              <button type="submit" class="btn btn--primary" style="width:100%">Login</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script src="./assets/js/courses.data.js"></script>
     <script src="./assets/js/programs.data.js"></script>

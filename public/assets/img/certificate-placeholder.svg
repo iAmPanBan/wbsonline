@@ -9,7 +9,7 @@
   <rect x="28" y="28" width="584" height="364" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
   <text x="320" y="110" text-anchor="middle" font-size="26" font-family="Segoe UI, Roboto, Arial" fill="#0E898E">CERTIFICATE OF COMPLETION</text>
   <text x="320" y="160" text-anchor="middle" font-size="18" font-family="Segoe UI, Roboto, Arial" fill="#334155">This certifies that</text>
-  <text x="320" y="200" text-anchor="middle" font-size="28" font-family="Segoe UI, Roboto, Arial" font-weight="700" fill="#0f172a">Alex Anderson</text>
+  <text x="320" y="200" text-anchor="middle" font-size="28" font-family="Segoe UI, Roboto, Arial" font-weight="700" fill="#0f172a">Panashe Banhire</text>
   <text x="320" y="238" text-anchor="middle" font-size="16" font-family="Segoe UI, Roboto, Arial" fill="#334155">has successfully completed the course</text>
   <text x="320" y="270" text-anchor="middle" font-size="20" font-family="Segoe UI, Roboto, Arial" font-weight="600" fill="#0f172a">Sample Course Title</text>
   <g transform="translate(180,300)">
@@ -24,4 +24,3 @@
     <text x="0" y="32" font-size="12" font-family="Segoe UI, Roboto, Arial" fill="#64748b">Date: 2025-01-01</text>
   </g>
 </svg>
-

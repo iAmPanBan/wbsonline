@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Certificates</title>
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <link rel="icon" href="./assets/img/logo.svg" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <a class="brand" href="dashboard.html">
+          <img src="./assets/img/logo.svg" alt="Lernio" class="brand__logo" />
+          <span class="brand__name">Lernio</span>
+        </a>
+        <div class="search">
+          <span class="search__icon" aria-hidden="true">🔎</span>
+          <input id="globalSearch" type="search" placeholder="Search courses" aria-label="Search courses" />
+        </div>
+        <nav class="nav">
+          <a class="nav__link" href="dashboard.html">Dashboard</a>
+          <a class="nav__link" href="courses.html">Courses</a>
+          <a class="nav__link nav__link--active" href="certificates.html">Certificates</a>
+        </nav>
+        <button class="avatar" aria-label="Account">
+          <span>A</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="container page">
+      <section class="section" aria-labelledby="mycerts-title">
+        <div class="section__header">
+          <h1 id="mycerts-title">My Certificates</h1>
+        </div>
+        <div class="grid grid--cards">
+          <article class="card card--certificate">
+            <a href="./assets/img/certificate-placeholder.svg" target="_blank" class="card__media" aria-label="View Certificate: Data Science Foundations">
+              <img src="./assets/img/certificate-placeholder.svg" alt="Certificate preview" />
+            </a>
+            <div class="card__body">
+              <h3 class="card__title">Data Science Foundations</h3>
+              <p class="card__meta">Issued to Panashe Banhire • ID: DS-00123</p>
+              <div class="card__actions">
+                <a class="btn" href="./assets/img/certificate-placeholder.svg" target="_blank">View</a>
+                <a class="btn btn--primary" href="./assets/img/certificate-placeholder.svg" download="Certificate-Data-Science.svg">Download</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="card card--certificate">
+            <a href="./assets/img/certificate-placeholder.svg" target="_blank" class="card__media" aria-label="View Certificate: Full‑Stack Web Development">
+              <img src="./assets/img/certificate-placeholder.svg" alt="Certificate preview" />
+            </a>
+            <div class="card__body">
+              <h3 class="card__title">Full‑Stack Web Development</h3>
+              <p class="card__meta">Issued to Panashe Banhire • ID: WEB-00456</p>
+              <div class="card__actions">
+                <a class="btn" href="./assets/img/certificate-placeholder.svg" target="_blank">View</a>
+                <a class="btn btn--primary" href="./assets/img/certificate-placeholder.svg" download="Certificate-Full-Stack-Web.svg">Download</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Add more certificate cards here as needed -->
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__top">
+        <div class="site-footer__grid">
+          <div>
+            <h4>Trending Programs</h4>
+            <ul>
+              <li><a href="course.html?id=intro-data-science">UT Austin: PG Program in Data Science with Gen AI</a></li>
+              <li><a href="course.html?id=machine-learning-engineer">PG Program in Artificial Intelligence and Machine Learning</a></li>
+              <li><a href="course.html?id=product-management-foundations">PG Program in Artificial Intelligence for Leaders</a></li>
+              <li><a href="course.html?id=sql-essentials">MIT: Applied AI and Data Science Program</a></li>
+              <li><a href="course.html?id=nlp-transformers">MIT IDSS Data Science and Machine Learning Course</a></li>
+              <li><a href="course.html?id=cloud-fundamentals">UT Austin Data Analytics Essentials</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Browse Domains</h4>
+            <ul>
+              <li><a href="courses.html">Data Science Courses</a></li>
+              <li><a href="courses.html">AI & Machine Learning Courses</a></li>
+              <li><a href="courses.html">Generative AI</a></li>
+              <li><a href="courses.html">Software Engineering Courses</a></li>
+              <li><a href="courses.html">Cloud Computing Courses</a></li>
+              <li><a href="courses.html">Design Courses</a></li>
+              <li><a href="courses.html">Cyber Security Courses</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Careers at Lernio</a></li>
+              <li><a href="#">Grievance Redressal</a></li>
+              <li><a href="#">Contact Us</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="brand">
+              <img src="./assets/img/logo.svg" alt="Lernio" />
+              <strong>Lernio</strong>
+            </div>
+            <div class="contact">
+              <div class="contact__item"><span class="contact__icon">✉️</span><a href="mailto:info@lernio.example">info@lernio.example</a></div>
+              <div class="contact__item"><span class="contact__icon">📞</span><a href="tel:+15126472647">+1 512 647 2647</a></div>
+              <div class="contact__item"><span class="contact__icon">🏢</span>For Enterprise queries:<br/><a href="mailto:business@lernio.example">business@lernio.example</a></div>
+            </div>
+            <div class="social" aria-label="Social links">
+              <a href="#" aria-label="Facebook">f</a>
+              <a href="#" aria-label="Twitter">t</a>
+              <a href="#" aria-label="LinkedIn">in</a>
+              <a href="#" aria-label="YouTube">▶</a>
+              <a href="#" aria-label="Instagram">◎</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div>© <span id="year"></span> Lernio. All rights reserved.</div>
+          <div class="footer__nav">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Support</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script src="./assets/js/app.js"></script>
+  </body>
+  </html>
+
