@@ -249,6 +249,94 @@
     }
   })();
 
+  // User menu dropdown (dashboard)
+  (function initUserMenu() {
+    let menu = byId('userMenu');
+    let btn = byId('avatarBtn');
+    // If user is logged in but avatar/menu missing (e.g., on non-dashboard pages), inject them
+    let user = null;
+    try { const raw = localStorage.getItem('lernioUser'); if (raw) user = JSON.parse(raw); } catch {}
+    if (user && (!btn || !menu)) {
+      // Replace Sign in with avatar if present
+      const auth = document.querySelector('.topbar .auth');
+      if (auth && !btn) {
+        auth.innerHTML = '<button id="avatarBtn" class="avatar" aria-label="Account"><span>PB</span></button>';
+        btn = byId('avatarBtn');
+      }
+      if (!menu) {
+        const overlay = document.createElement('div');
+        overlay.id = 'userMenu';
+        overlay.className = 'user-menu';
+        overlay.setAttribute('aria-hidden','true');
+        overlay.innerHTML = `
+          <div class="user-menu__backdrop" data-action="close"></div>
+          <div class="user-menu__panel" role="menu">
+            <div class="user-menu__header">
+              <div class="user-menu__avatar">PB</div>
+              <div>
+                <div id="umName" class="user-menu__name">User</div>
+                <div id="umEmail" class="user-menu__email">user@example.com</div>
+              </div>
+            </div>
+            <ul class="user-menu__list">
+              <li><a class="user-menu__item" href="my-learning.html">My learning</a></li>
+              <li><a class="user-menu__item" href="#">My cart</a></li>
+              <li><a class="user-menu__item" href="#">Wishlist</a></li>
+              <li><a class="user-menu__item" href="#">Instructor dashboard</a></li>
+            </ul>
+            <ul class="user-menu__list user-menu__section">
+              <li><a class="user-menu__item" href="#">Notifications <span class="um-badge">8</span></a></li>
+              <li><a class="user-menu__item" href="#">Messages <span class="um-badge">9+</span></a></li>
+            </ul>
+            <ul class="user-menu__list user-menu__section">
+              <li><a class="user-menu__item" href="settings.html">Account settings</a></li>
+              <li><a class="user-menu__item" href="#">Payment methods</a></li>
+              <li><a class="user-menu__item" href="#">Subscriptions</a></li>
+              <li><a class="user-menu__item" href="#">Credits</a></li>
+              <li><a class="user-menu__item" href="#">Purchase history</a></li>
+            </ul>
+            <ul class="user-menu__list user-menu__section">
+              <li><a class="user-menu__item" href="#">Language <span style=\"color:var(--color-muted)\">English</span></a></li>
+              <li><a class="user-menu__item" href="profile.html">Public profile</a></li>
+              <li><a class="user-menu__item" href="profile.html">Edit profile</a></li>
+            </ul>
+            <ul class="user-menu__list user-menu__section">
+              <li><a class="user-menu__item" href="#">Help and Support</a></li>
+              <li><a id="logoutBtn" class="user-menu__item" href="#">Log out</a></li>
+            </ul>
+          </div>`;
+        document.body.appendChild(overlay);
+        menu = byId('userMenu');
+      }
+    }
+    if (!menu || !btn) return;
+    const backdrop = menu.querySelector('[data-action="close"]');
+    const nameEl = byId('umName');
+    const emailEl = byId('umEmail');
+    const logoutBtn = byId('logoutBtn');
+
+    // Fill from stored user when available
+    try {
+      if (user) {
+        const u = user;
+        if (u?.email && emailEl) emailEl.textContent = u.email;
+        if (u?.email && nameEl) {
+          const base = u.email.split('@')[0].replace(/\W+/g, ' ').trim();
+          const pretty = base ? base.split(' ').map(s => s.charAt(0).toUpperCase()+s.slice(1)).join(' ') : 'Learner';
+          nameEl.textContent = pretty;
+        }
+      }
+    } catch {}
+
+    function open() { menu.classList.add('is-open'); }
+    function close() { menu.classList.remove('is-open'); }
+
+    btn.addEventListener('click', (e) => { e.preventDefault(); menu.classList.toggle('is-open'); });
+    if (backdrop) backdrop.addEventListener('click', close);
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    if (logoutBtn) logoutBtn.addEventListener('click', (e) => { e.preventDefault(); try { localStorage.removeItem('lernioUser'); } catch {} window.location.href = 'index.html'; });
+  })();
+
   // Carousel (homepage)
   (function initCarousel() {
     const viewport = byId('carousel');
@@ -393,5 +481,57 @@
 
     show(0);
     start();
+  })();
+
+  // My Learning page
+  (function initMyLearning() {
+    const grid = document.getElementById('learningGrid');
+    if (!grid || !Array.isArray(window.COURSES)) return;
+    const tabs = Array.from(document.querySelectorAll('#learningTabs .chip'));
+    const counts = {
+      all: document.getElementById('count-all'),
+      inprogress: document.getElementById('count-inprogress'),
+      enrolled: document.getElementById('count-enrolled'),
+      completed: document.getElementById('count-completed')
+    };
+
+    const all = window.COURSES;
+    const inprogress = all.filter((c) => (c.progress || 0) > 0 && (c.progress || 0) < 100);
+    const enrolled = all.filter((c) => c.enrolled);
+    const completed = all.filter((c) => (c.progress || 0) >= 100);
+
+    function updateCounts() {
+      if (counts.all) counts.all.textContent = String(all.length);
+      if (counts.inprogress) counts.inprogress.textContent = String(inprogress.length);
+      if (counts.enrolled) counts.enrolled.textContent = String(enrolled.length);
+      if (counts.completed) counts.completed.textContent = String(completed.length);
+    }
+
+    function getList(filter) {
+      switch (filter) {
+        case 'inprogress': return inprogress;
+        case 'enrolled': return enrolled;
+        case 'completed': return completed;
+        case 'all':
+        default: return all;
+      }
+    }
+
+    function render(filter) {
+      const list = getList(filter);
+      grid.innerHTML = list.map((c) => {
+        const showProgress = (c.progress || 0) > 0 && (c.progress || 0) < 100;
+        const cta = showProgress ? 'Continue' : (c.enrolled ? 'Open' : 'Enroll');
+        return courseCard(c, { showProgress, cta });
+      }).join('');
+    }
+
+    updateCounts();
+    render('inprogress');
+    tabs.forEach((btn) => btn.addEventListener('click', () => {
+      tabs.forEach((b) => b.classList.remove('chip--active'));
+      btn.classList.add('chip--active');
+      render(btn.getAttribute('data-filter') || 'inprogress');
+    }));
   })();
 })();

@@ -21,10 +21,10 @@
         <nav class="nav">
           <a class="nav__link nav__link--active" href="dashboard.html">Dashboard</a>
           <a class="nav__link" href="courses.html">Courses</a>
-          <a class="nav__link" href="#">My Learning</a>
+          <a class="nav__link" href="my-learning.html">My Learning</a>
         </nav>
-        <button class="avatar" aria-label="Account">
-          <span>A</span>
+        <button id="avatarBtn" class="avatar" aria-label="Account">
+          <span>PB</span>
         </button>
       </div>
     </header>
@@ -45,29 +45,29 @@
         </div>
         <div class="grid grid--cards">
           <article class="card card--certificate">
-            <a href="./assets/img/certificate-placeholder.svg" target="_blank" class="card__media" aria-label="View Data Science Certificate">
-              <img src="./assets/img/certificate-placeholder.svg" alt="Certificate preview" />
+            <a href="./assets/img/certificate-dsf.svg" target="_blank" class="card__media" aria-label="View Certificate: Data Science Foundations">
+              <img src="./assets/img/certificate-dsf.svg" alt="Certificate: Data Science Foundations" />
             </a>
             <div class="card__body">
               <h3 class="card__title">Data Science Foundations</h3>
-              <p class="card__meta">Issued: Jan 15, 2025 • ID: DS-00123</p>
+              <p class="card__meta">Issued to Panashe Banhire • Date: Jan 15, 2025 • ID: DS-00123</p>
               <div class="card__actions">
-                <a class="btn" href="./assets/img/certificate-placeholder.svg" target="_blank">View</a>
-                <a class="btn btn--primary" href="./assets/img/certificate-placeholder.svg" download="Certificate-Data-Science.svg">Download</a>
+                <a class="btn" href="./assets/img/certificate-dsf.svg" target="_blank">View</a>
+                <a class="btn btn--primary" href="./assets/img/certificate-dsf.svg" download="Certificate-Data-Science.svg">Download</a>
               </div>
             </div>
           </article>
 
           <article class="card card--certificate">
-            <a href="./assets/img/certificate-placeholder.svg" target="_blank" class="card__media" aria-label="View Web Development Certificate">
-              <img src="./assets/img/certificate-placeholder.svg" alt="Certificate preview" />
+            <a href="./assets/img/certificate-fswd.svg" target="_blank" class="card__media" aria-label="View Certificate: Full‑Stack Web Development">
+              <img src="./assets/img/certificate-fswd.svg" alt="Certificate: Full‑Stack Web Development" />
             </a>
             <div class="card__body">
               <h3 class="card__title">Full‑Stack Web Development</h3>
-              <p class="card__meta">Issued: Oct 3, 2024 • ID: WEB-00456</p>
+              <p class="card__meta">Issued to Panashe Banhire • Date: Oct 3, 2024 • ID: WEB-00456</p>
               <div class="card__actions">
-                <a class="btn" href="./assets/img/certificate-placeholder.svg" target="_blank">View</a>
-                <a class="btn btn--primary" href="./assets/img/certificate-placeholder.svg" download="Certificate-Full-Stack-Web.svg">Download</a>
+                <a class="btn" href="./assets/img/certificate-fswd.svg" target="_blank">View</a>
+                <a class="btn btn--primary" href="./assets/img/certificate-fswd.svg" download="Certificate-Full-Stack-Web.svg">Download</a>
               </div>
             </div>
           </article>
@@ -149,6 +149,46 @@
         </div>
       </div>
     </footer>
+
+    <!-- User menu overlay -->
+    <div id="userMenu" class="user-menu" aria-hidden="true">
+      <div class="user-menu__backdrop" data-action="close"></div>
+      <div class="user-menu__panel" role="menu">
+        <div class="user-menu__header">
+          <div class="user-menu__avatar">PB</div>
+          <div>
+            <div id="umName" class="user-menu__name">Panashe Banhire</div>
+            <div id="umEmail" class="user-menu__email">panashebanhire@gmail.com</div>
+          </div>
+        </div>
+        <ul class="user-menu__list">
+          <li><a class="user-menu__item" href="my-learning.html">My learning</a></li>
+          <li><a class="user-menu__item" href="#">My cart</a></li>
+          <li><a class="user-menu__item" href="#">Wishlist</a></li>
+          <li><a class="user-menu__item" href="#">Instructor dashboard</a></li>
+        </ul>
+        <ul class="user-menu__list user-menu__section">
+          <li><a class="user-menu__item" href="#">Notifications <span class="um-badge">8</span></a></li>
+          <li><a class="user-menu__item" href="#">Messages <span class="um-badge">9+</span></a></li>
+        </ul>
+        <ul class="user-menu__list user-menu__section">
+          <li><a class="user-menu__item" href="settings.html">Account settings</a></li>
+          <li><a class="user-menu__item" href="#">Payment methods</a></li>
+          <li><a class="user-menu__item" href="#">Subscriptions</a></li>
+          <li><a class="user-menu__item" href="#">Credits</a></li>
+          <li><a class="user-menu__item" href="#">Purchase history</a></li>
+        </ul>
+        <ul class="user-menu__list user-menu__section">
+          <li><a class="user-menu__item" href="#">Language <span style="color:var(--color-muted)">English</span></a></li>
+          <li><a class="user-menu__item" href="profile.html">Public profile</a></li>
+          <li><a class="user-menu__item" href="profile.html">Edit profile</a></li>
+        </ul>
+        <ul class="user-menu__list user-menu__section">
+          <li><a class="user-menu__item" href="#">Help and Support</a></li>
+          <li><a id="logoutBtn" class="user-menu__item" href="#">Log out</a></li>
+        </ul>
+      </div>
+    </div>
 
     <script src="./assets/js/courses.data.js"></script>
     <script src="./assets/js/app.js"></script>
