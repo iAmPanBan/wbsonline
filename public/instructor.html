@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Instructor Studio</title>
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <link rel="icon" href="./assets/img/logo.svg" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <a class="brand" href="index.html">
+          <img src="./assets/img/logo.svg" alt="LMS" class="brand__logo" />
+          <span class="brand__name">Lernio</span>
+        </a>
+        <div class="search">
+          <span class="search__icon" aria-hidden="true">🔎</span>
+          <input type="search" placeholder="Search courses" aria-label="Search courses" />
+        </div>
+        <nav class="nav">
+          <a class="nav__link" href="index.html">Home</a>
+          <a class="nav__link" href="courses.html">Courses</a>
+          <a class="nav__link" href="my-learning.html">My Learning</a>
+          <a class="nav__link nav__link--active" href="instructor.html">Instructor</a>
+        </nav>
+        <button class="avatar" aria-label="Account">
+          <span>PB</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="container page">
+      <div class="wizard-layout">
+        <aside class="flow-nav">
+          <h2>Create Course</h2>
+          <ul>
+            <li class="is-active" data-target="pane-basic"><span class="dot"></span>Intended learners</li>
+            <li data-target="pane-content"><span class="dot"></span>Course content</li>
+            <li data-target="pane-landing"><span class="dot"></span>Course landing page</li>
+            <li data-target="pane-fee"><span class="dot"></span>Pricing</li>
+            <li data-target="pane-promotions"><span class="dot"></span>Promotions</li>
+            <li data-target="pane-messages"><span class="dot"></span>Course messages</li>
+          </ul>
+          <button class="btn btn--primary btn--full">Publish Course</button>
+        </aside>
+
+        <div class="wizard-content">
+          <p class="breadcrumb">Course Management / <span>Create Course</span></p>
+          <h1>Course Management</h1>
+          <div class="tab-strip">
+            <button class="tab-pill is-active" data-target="pane-basic">Intended learners</button>
+            <button class="tab-pill" data-target="pane-content">Course content</button>
+            <button class="tab-pill" data-target="pane-landing">Course landing page</button>
+            <button class="tab-pill" data-target="pane-fee">Pricing</button>
+            <button class="tab-pill" data-target="pane-promotions">Promotions</button>
+            <button class="tab-pill" data-target="pane-messages">Course messages</button>
+          </div>
+
+          <div id="pane-basic" class="tab-pane is-active">
+            <form id="courseForm" class="wizard-card">
+              <h2>Intended learners</h2>
+              <p class="field-note">The following descriptions will be publicly visible on your course landing page and help learners decide if your course is right for them.</p>
+
+              <div class="question-block">
+                <h3>What will students learn in your course?</h3>
+                <p>You must enter at least 4 learning objectives or outcomes that learners can expect after completing the course.</p>
+                <div class="response-field"><input class="response-input" name="learn1" data-field="learn1" type="text" maxlength="160" placeholder="Example: Define the roles and responsibilities of a project manager" /><span class="counter">160</span></div>
+                <div class="response-field"><input class="response-input" name="learn2" data-field="learn2" type="text" maxlength="160" placeholder="Example: Estimate project timelines and budgets" /><span class="counter">160</span></div>
+                <div class="response-field"><input class="response-input" name="learn3" data-field="learn3" type="text" maxlength="160" placeholder="Example: Identify and manage project risks" /><span class="counter">160</span></div>
+                <div class="response-field"><input class="response-input" name="learn4" data-field="learn4" type="text" maxlength="160" placeholder="Example: Complete a case study to manage a project" /><span class="counter">160</span></div>
+                <button type="button" class="link-btn">+ Add more to your response</button>
+              </div>
+
+              <div class="question-block">
+                <h3>What are the requirements or prerequisites?</h3>
+                <p>List the required skills, experience, tools, or equipment learners should have prior to taking your course.</p>
+                <textarea class="response-area" name="prerequisites" data-field="prerequisites" placeholder="Example: No programming experience needed. We will learn everything you need to know"></textarea>
+                <button type="button" class="link-btn">+ Add more to your response</button>
+              </div>
+
+              <div class="question-block">
+                <h3>Who is this course for?</h3>
+                <p>Write a clear description of the intended learners for your course who will find your content valuable.</p>
+                <textarea class="response-area" name="audience" data-field="audience" placeholder="Example: Beginner Python developers curious about data science"></textarea>
+                <button type="button" class="link-btn">+ Add more to your response</button>
+              </div>
+
+              <button class="btn btn--primary js-save-next" type="button" data-current="pane-basic">Save &amp; Continue</button>
+              <div id="courseStatus" class="status" aria-live="polite"></div>
+            </form>
+          </div>
+
+          <div id="pane-content" class="tab-pane">
+            <div class="wizard-card">
+              <header class="curriculum-header">
+                <div>
+                  <h2>Curriculum</h2>
+                  <p class="field-note">Here’s where you add course content—lectures, sections, assignments, and more.</p>
+                </div>
+                <button type="button" class="btn" id="bulkBtn">Bulk Upload</button>
+              </header>
+
+              <div class="curriculum">
+                <div class="curriculum-block">
+                  <div class="curriculum-icon">📁</div>
+                  <div>
+                    <p>Upload video lesson</p>
+                    <small>MP4, MOV · Max 500mb</small>
+                    <button type="button" class="btn">Upload video</button>
+                  </div>
+                </div>
+                <div class="curriculum-block">
+                  <div class="curriculum-icon">📝</div>
+                  <div>
+                    <p>Create quiz</p>
+                    <small>Add quick knowledge checks for each section.</small>
+                    <button type="button" class="btn btn--primary">Add quiz</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section-actions">
+                <button type="button" class="btn btn--primary js-save-next" data-current="pane-content">Save &amp; Continue</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="pane-landing" class="tab-pane">
+            <div class="wizard-card landing-card">
+              <h2>Course landing page</h2>
+              <p class="field-note">Your landing page is crucial to your success on Lernio. Craft compelling copy that helps learners understand what you offer.</p>
+
+              <div class="input-block">
+                <label for="landingTitle">Course title <span class="char-count" data-count-for="landingTitle" data-max="60">0/60</span></label>
+                <input id="landingTitle" class="fancy-input" name="landingTitle" data-field="landingTitle" type="text" maxlength="60" placeholder="Personal Branding" />
+                <small class="field-note">Your title should be a mix of attention-grabbing, informative, and optimized for search.</small>
+              </div>
+              <div class="input-block">
+                <label for="landingSubtitle">Course subtitle <span class="char-count" data-count-for="landingSubtitle" data-max="120">0/120</span></label>
+                <input id="landingSubtitle" class="fancy-input" type="text" name="landingSubtitle" data-field="landingSubtitle" maxlength="120" placeholder="Insert your course subtitle." />
+                <small class="field-note">Use 1 or 2 related keywords, and mention 3-4 of the most important areas that you've covered.</small>
+              </div>
+              <div class="input-block">
+                <label for="landingDescription">Course description</label>
+                <textarea id="landingDescription" class="response-area" name="landingDescription" data-field="landingDescription" placeholder="Insert your course description."></textarea>
+                <small class="field-note">Description should have minimum 200 words.</small>
+              </div>
+
+              <div class="landing-selects">
+                <label class="field-label">
+                  Language
+                  <select class="fancy-input" name="language" data-field="language">
+                    <option value="english">English</option>
+                  </select>
+                </label>
+                <label class="field-label">
+                  Level
+                  <select class="fancy-input" name="level" data-field="level">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="executive">Executive</option>
+                  </select>
+                </label>
+                <label class="field-label">
+                  Category
+                  <select class="fancy-input" name="category" data-field="category">
+                    <option>Design</option>
+                    <option>AI &amp; Machine Learning</option>
+                    <option>Data Science &amp; Analytics</option>
+                    <option>Generative AI</option>
+                    <option>Software &amp; Tech</option>
+                    <option>Cloud Computing</option>
+                    <option>Cyber Security</option>
+                    <option>Product Management</option>
+                    <option>Business &amp; Management</option>
+                  </select>
+                </label>
+              </div>
+
+              <label class="field-label">
+                Add custom category
+                <input class="fancy-input" type="text" name="categoryCustom" data-field="categoryCustom" placeholder="e.g. Leadership, Hospitality" />
+                <small class="field-note">If your topic doesn't fit the presets, type a bespoke category here.</small>
+              </label>
+
+              <label class="field-label">
+                What is primarily taught in your course?
+                <input class="fancy-input" type="text" name="primaryTopic" data-field="primaryTopic" placeholder="e.g. UI prototyping in Figma" />
+              </label>
+
+              <div class="input-block">
+                <label for="courseTags">Course tags</label>
+                <input id="courseTags" class="fancy-input" type="text" name="courseTags" data-field="courseTags" placeholder="branding, storytelling, communication" />
+                <small class="field-note">Separate tags with commas to help learners discover your course.</small>
+              </div>
+
+              <div class="upload-grid">
+                <label class="field-label file-field">
+                  Course image
+                  <input class="image-drop" id="coverUpload" type="file" accept="image/*" data-field="coverName" data-preview-target="coverPreview" data-file-label="cover" />
+                  <span class="file-chip" data-file-label="cover">Upload PNG or JPG</span>
+                  <div class="cover-preview" id="coverPreview">
+                    <span>No image uploaded</span>
+                  </div>
+                  <small>Upload 750x422 cover image. JPG or PNG.</small>
+                </label>
+                <label class="field-label file-field">
+                  Promotional video
+                  <input class="image-drop" id="promoUpload" type="file" accept="video/*" data-field="promoName" data-file-label="promo" />
+                  <span class="file-chip" data-file-label="promo">No file selected</span>
+                  <small>Your promo video helps learners understand the value quickly.</small>
+                </label>
+              </div>
+
+              <div class="section-actions">
+                <button type="button" class="btn btn--primary js-save-next" data-current="pane-landing">Save &amp; Continue</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="pane-fee" class="tab-pane">
+            <div class="wizard-card fee-card">
+              <h2>Fee & discount</h2>
+              <label class="field-label">Course price</label>
+              <div class="amount-field">
+                <span>$</span>
+                <input type="number" min="0" step="1" placeholder="99" name="price" data-field="price" />
+              </div>
+              <div class="radio-group">
+                <label><input type="radio" name="pricingOption" data-field="pricingOption" value="none" checked /> No discount</label>
+                <label><input type="radio" name="pricingOption" data-field="pricingOption" value="percent" /> Apply discount</label>
+                <label><input type="radio" name="pricingOption" data-field="pricingOption" value="free" /> Free</label>
+              </div>
+              <label class="field-label">Discount percentage
+                <input type="number" min="0" max="100" placeholder="20" class="fancy-input" name="discountPercent" data-field="discountPercent" />
+              </label>
+              <div class="sale-actions">
+                <button type="button" class="btn btn--primary">Start sale</button>
+                <button type="button" class="btn btn--ghost">Mark as free</button>
+              </div>
+              <div class="section-actions">
+                <button type="button" class="btn btn--primary js-save-next" data-current="pane-fee">Save &amp; Continue</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="pane-promotions" class="tab-pane">
+            <div class="wizard-card">
+              <h2>Promotions</h2>
+              <p class="field-note">Create coupon codes or enrollment campaigns to boost sign-ups.</p>
+              <label class="field-label">Promotion title<input class="fancy-input" type="text" name="promotionTitle" data-field="promotionTitle" placeholder="e.g. New Year Launch" /></label>
+              <label class="field-label">Discount %<input class="fancy-input" type="number" name="promotionDiscount" data-field="promotionDiscount" min="0" max="100" placeholder="25" /></label>
+              <div class="section-actions">
+                <button class="btn btn--primary js-save-next" type="button" data-current="pane-promotions">Save &amp; Continue</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="pane-messages" class="tab-pane">
+            <div class="wizard-card">
+              <h2>Course messages</h2>
+              <p class="field-note">Send welcome or congratulatory messages to learners automatically.</p>
+              <label class="field-label">Welcome message<textarea class="response-area" name="welcomeMessage" data-field="welcomeMessage" placeholder="Welcome learners to your course and set expectations."></textarea></label>
+              <label class="field-label">Congratulations message<textarea class="response-area" name="congratsMessage" data-field="congratsMessage" placeholder="Congratulate learners on completing the course."></textarea></label>
+              <div class="section-actions">
+                <button class="btn btn--primary js-save-next" type="button" data-current="pane-messages">Save &amp; Continue</button>
+                <button id="publishBtn" class="btn btn--dark" type="button">Publish Course</button>
+              </div>
+              <div id="publishStatus" class="status status--floating" aria-live="polite"></div>
+            </div>
+          </div>
+
+          <section class="section" aria-labelledby="created-title">
+            <div class="section__header">
+              <h2 id="created-title">Your created courses</h2>
+            </div>
+            <div id="createdCourses" class="grid grid--cards"></div>
+          </section>
+        </div>
+      </div>
+
+    </main>
+
+    <div id="bulkModal" class="modal-overlay" aria-hidden="true" role="dialog">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Bulk upload files</h3>
+        </div>
+        <form>
+          <input type="file" multiple />
+          <small>Upload multiple lessons or resources at once.</small>
+        </form>
+        <div class="modal-actions">
+          <button type="button" class="btn" data-close>Cancel</button>
+          <button type="button" class="btn btn--primary">Upload</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container site-footer__top">
+        <div class="site-footer__grid">
+          <div>
+            <h4>Trending Programs</h4>
+            <ul>
+              <li><a href="course.html?id=intro-data-science">UT Austin: PG Program in Data Science with Gen AI</a></li>
+              <li><a href="course.html?id=machine-learning-engineer">PG Program in Artificial Intelligence and Machine Learning</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Browse Domains</h4>
+            <ul>
+              <li><a href="courses.html">Data Science Courses</a></li>
+              <li><a href="courses.html">Software Engineering Courses</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Contact Us</a></li>
+            </ul>
+          </div>
+          <div>
+            <div class="brand">
+              <img src="./assets/img/logo.svg" alt="Lernio" />
+              <strong>Lernio</strong>
+            </div>
+            <div class="contact">
+              <div class="contact__item"><span class="contact__icon">✉️</span><a href="mailto:info@lernio.example">info@lernio.example</a></div>
+              <div class="contact__item"><span class="contact__icon">📞</span><a href="tel:+15126472647">+1 512 647 2647</a></div>
+            </div>
+            <div class="social" aria-label="Social links">
+              <a href="#" aria-label="Facebook">f</a>
+              <a href="#" aria-label="Twitter">t</a>
+              <a href="#" aria-label="LinkedIn">in</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+          <div>© <span id="year"></span> Lernio. All rights reserved.</div>
+          <div class="footer__nav">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Support</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="./assets/js/courses.data.js"></script>
+    <script src="./assets/js/app.js"></script>
+  </body>
+  </html>
