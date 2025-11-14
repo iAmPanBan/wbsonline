@@ -18,7 +18,7 @@ window.COURSES = [
   },
   {
     id: "fullstack-web-dev",
-    title: "Full‑Stack Web Development",
+    title: "Fullstack Web Development",
     level: "intermediate",
     lessonsCount: 36,
     description: "Build robust apps with HTML, CSS, JS, APIs and DBs.",

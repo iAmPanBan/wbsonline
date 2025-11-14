@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -15,7 +15,7 @@
           <span class="brand__name">Lernio</span>
         </a>
         <div class="search">
-          <span class="search__icon" aria-hidden="true">🔎</span>
+          <span class="search__icon" aria-hidden="true">≡ƒöÄ</span>
           <input type="search" placeholder="Search courses" aria-label="Search courses" />
         </div>
         <nav class="nav">
@@ -23,7 +23,9 @@
           <a class="nav__link" href="courses.html">Courses</a>
           <a class="nav__link" href="my-learning.html">My Learning</a>
           <a class="nav__link nav__link--active" href="instructor.html">Instructor</a>
-        </nav>
+          <a class="nav__link" href="cart.html">Cart</a>
+          <a class="nav__link" href="wishlist.html">Wishlist</a>
+</nav>
         <button class="avatar" aria-label="Account">
           <span>PB</span>
         </button>
@@ -69,21 +71,21 @@
                 <div class="response-field"><input class="response-input" name="learn2" data-field="learn2" type="text" maxlength="160" placeholder="Example: Estimate project timelines and budgets" /><span class="counter">160</span></div>
                 <div class="response-field"><input class="response-input" name="learn3" data-field="learn3" type="text" maxlength="160" placeholder="Example: Identify and manage project risks" /><span class="counter">160</span></div>
                 <div class="response-field"><input class="response-input" name="learn4" data-field="learn4" type="text" maxlength="160" placeholder="Example: Complete a case study to manage a project" /><span class="counter">160</span></div>
-                <button type="button" class="link-btn">+ Add more to your response</button>
+                <button type="button" class="link-btn" data-add-field="learn">+ Add more to your response</button>
               </div>
 
               <div class="question-block">
                 <h3>What are the requirements or prerequisites?</h3>
                 <p>List the required skills, experience, tools, or equipment learners should have prior to taking your course.</p>
-                <textarea class="response-area" name="prerequisites" data-field="prerequisites" placeholder="Example: No programming experience needed. We will learn everything you need to know"></textarea>
-                <button type="button" class="link-btn">+ Add more to your response</button>
+                <textarea class="response-area" name="prerequisites1" data-field="prerequisites1" placeholder="Example: No programming experience needed. We will learn everything you need to know"></textarea>
+                <button type="button" class="link-btn" data-add-field="prerequisites">+ Add more to your response</button>
               </div>
 
               <div class="question-block">
                 <h3>Who is this course for?</h3>
                 <p>Write a clear description of the intended learners for your course who will find your content valuable.</p>
-                <textarea class="response-area" name="audience" data-field="audience" placeholder="Example: Beginner Python developers curious about data science"></textarea>
-                <button type="button" class="link-btn">+ Add more to your response</button>
+                <textarea class="response-area" name="audience1" data-field="audience1" placeholder="Example: Beginner Python developers curious about data science"></textarea>
+                <button type="button" class="link-btn" data-add-field="audience">+ Add more to your response</button>
               </div>
 
               <button class="btn btn--primary js-save-next" type="button" data-current="pane-basic">Save &amp; Continue</button>
@@ -96,22 +98,22 @@
               <header class="curriculum-header">
                 <div>
                   <h2>Curriculum</h2>
-                  <p class="field-note">Here’s where you add course content—lectures, sections, assignments, and more.</p>
+                  <p class="field-note">HereΓÇÖs where you add course contentΓÇölectures, sections, assignments, and more.</p>
                 </div>
                 <button type="button" class="btn" id="bulkBtn">Bulk Upload</button>
               </header>
 
               <div class="curriculum">
                 <div class="curriculum-block">
-                  <div class="curriculum-icon">📁</div>
+                  <div class="curriculum-icon">≡ƒôü</div>
                   <div>
                     <p>Upload video lesson</p>
-                    <small>MP4, MOV · Max 500mb</small>
+                    <small>MP4, MOV ┬╖ Max 500mb</small>
                     <button type="button" class="btn">Upload video</button>
                   </div>
                 </div>
                 <div class="curriculum-block">
-                  <div class="curriculum-icon">📝</div>
+                  <div class="curriculum-icon">≡ƒô¥</div>
                   <div>
                     <p>Create quiz</p>
                     <small>Add quick knowledge checks for each section.</small>
@@ -261,8 +263,14 @@
             <div class="wizard-card">
               <h2>Course messages</h2>
               <p class="field-note">Send welcome or congratulatory messages to learners automatically.</p>
-              <label class="field-label">Welcome message<textarea class="response-area" name="welcomeMessage" data-field="welcomeMessage" placeholder="Welcome learners to your course and set expectations."></textarea></label>
-              <label class="field-label">Congratulations message<textarea class="response-area" name="congratsMessage" data-field="congratsMessage" placeholder="Congratulate learners on completing the course."></textarea></label>
+              <div class="message-field">
+                <label class="field-label" for="welcomeMessage">Welcome message</label>
+                <textarea id="welcomeMessage" class="response-area" name="welcomeMessage" data-field="welcomeMessage" placeholder="Welcome learners to your course and set expectations."></textarea>
+              </div>
+              <div class="message-field">
+                <label class="field-label" for="congratsMessage">Congratulations message</label>
+                <textarea id="congratsMessage" class="response-area" name="congratsMessage" data-field="congratsMessage" placeholder="Congratulate learners on completing the course."></textarea>
+              </div>
               <div class="section-actions">
                 <button class="btn btn--primary js-save-next" type="button" data-current="pane-messages">Save &amp; Continue</button>
                 <button id="publishBtn" class="btn btn--dark" type="button">Publish Course</button>
@@ -328,8 +336,8 @@
               <strong>Lernio</strong>
             </div>
             <div class="contact">
-              <div class="contact__item"><span class="contact__icon">✉️</span><a href="mailto:info@lernio.example">info@lernio.example</a></div>
-              <div class="contact__item"><span class="contact__icon">📞</span><a href="tel:+15126472647">+1 512 647 2647</a></div>
+              <div class="contact__item"><span class="contact__icon">Γ£ë∩╕Å</span><a href="mailto:info@lernio.example">info@lernio.example</a></div>
+              <div class="contact__item"><span class="contact__icon">≡ƒô₧</span><a href="tel:+15126472647">+1 512 647 2647</a></div>
             </div>
             <div class="social" aria-label="Social links">
               <a href="#" aria-label="Facebook">f</a>
@@ -341,7 +349,7 @@
       </div>
       <div class="site-footer__bottom">
         <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
-          <div>© <span id="year"></span> Lernio. All rights reserved.</div>
+          <div>┬⌐ <span id="year"></span> Lernio. All rights reserved.</div>
           <div class="footer__nav">
             <a href="#">Privacy</a>
             <a href="#">Terms</a>

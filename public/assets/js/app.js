@@ -30,10 +30,76 @@
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
   // Render helpers
-  const formatMeta = (level, lessonsCount) =>
-    `${(level||'').charAt(0).toUpperCase() + (level||'').slice(1)} • ${lessonsCount} lessons`;
+const formatMeta = (level, lessonsCount) => {
+    const label = level || 'beginner';
+    const formattedLevel = label.charAt(0).toUpperCase() + label.slice(1);
+    const totalLessons = typeof lessonsCount === 'number' ? lessonsCount : Number(lessonsCount) || 0;
+    return `${formattedLevel} - ${totalLessons} lessons`;
+  };
+
 
   const courseLink = (id) => `course.html?id=${encodeURIComponent(id)}`;
+
+  const STORAGE_KEYS = {
+    cart: 'lernioCartItems',
+    wishlist: 'lernioWishlistItems'
+  };
+  let cartItems = loadCollection('cart');
+  let wishlistItems = loadCollection('wishlist');
+  const priceFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
+  function loadCollection(type) {
+    const key = STORAGE_KEYS[type];
+    if (!key) return [];
+    try {
+      const raw = localStorage.getItem(key);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveCollection(type, list) {
+    const key = STORAGE_KEYS[type];
+    if (!key) return;
+    try {
+      localStorage.setItem(key, JSON.stringify(list));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function setCollection(type, list) {
+    if (type === 'cart') {
+      cartItems = list;
+    } else if (type === 'wishlist') {
+      wishlistItems = list;
+    }
+    saveCollection(type, list);
+  }
+
+  function getCollection(type) {
+    return type === 'cart' ? cartItems : wishlistItems;
+  }
+
+  function getCourseById(id) {
+    if (!Array.isArray(window.COURSES)) return null;
+    return window.COURSES.find((c) => c.id === id) || null;
+  }
+
+  function resolveCoursePrice(course) {
+    const explicit = Number(course?.price);
+    if (!Number.isNaN(explicit) && explicit > 0) return explicit;
+    const level = (course?.level || '').toLowerCase();
+    if (level === 'advanced') return 149;
+    if (level === 'intermediate') return 119;
+    return 89;
+  }
+
+  function formatPrice(value) {
+    return priceFormatter.format(Math.max(0, Number(value) || 0));
+  }
 
   function courseCard(course, opts = {}) {
     const { showProgress = false, cta = 'Enrol' } = opts;
@@ -41,6 +107,18 @@
       ? `<div class="progress"><div class="progress__bar" style="width: ${course.progress}%"></div></div>
          <span class="badge">${course.progress}% complete</span>`
       : '';
+    const primaryAction = progressHtml
+      ? `<div class="card__actions"><a class="btn btn--primary" href="${courseLink(course.id)}">Continue</a>${progressHtml}</div>`
+      : `<div class="card__actions"><a class="btn btn--primary" href="${courseLink(course.id)}">${cta}</a></div>`;
+    const commerceActions = `
+      <div class="card__commerce">
+        <button class="btn btn--secondary js-add-cart" data-course="${course.id}">Add to cart</button>
+        <button class="btn btn--ghost btn--wishlist js-add-wishlist" data-course="${course.id}" aria-label="Add ${course.title} to wishlist">
+          <span class="heart-icon" aria-hidden="true">&hearts;</span>
+          <span class="btn-label">Add to wishlist</span>
+        </button>
+      </div>
+    `;
     return `
       <article class="card card--course" data-level="${course.level}" data-title="${course.title}">
         <a href="${courseLink(course.id)}" class="card__media">
@@ -50,10 +128,80 @@
           <h3 class="card__title"><a href="${courseLink(course.id)}">${course.title}</a></h3>
           <p class="card__meta">${formatMeta(course.level, course.lessonsCount)}</p>
           ${course.description ? `<p class="card__desc">${course.description}</p>` : ''}
-          ${progressHtml ? `<div class="card__actions"><a class="btn btn--primary" href="${courseLink(course.id)}">Continue</a>${progressHtml}</div>` : `<div class="card__actions"><a class="btn btn--primary" href="${courseLink(course.id)}">${cta}</a></div>`}
+          ${primaryAction}
+          ${commerceActions}
         </div>
       </article>
     `;
+  }
+
+  document.addEventListener('click', (event) => {
+    const cartBtn = event.target.closest('.js-add-cart');
+    if (cartBtn) {
+      event.preventDefault();
+      addCourseToCollection('cart', cartBtn.getAttribute('data-course'));
+      return;
+    }
+    const wishlistBtn = event.target.closest('.js-add-wishlist');
+    if (wishlistBtn) {
+      event.preventDefault();
+      addCourseToCollection('wishlist', wishlistBtn.getAttribute('data-course'));
+      return;
+    }
+    const removeCartBtn = event.target.closest('[data-remove-cart]');
+    if (removeCartBtn) {
+      event.preventDefault();
+      removeFromCollection('cart', removeCartBtn.getAttribute('data-remove-cart'));
+      return;
+    }
+    const removeWishlistBtn = event.target.closest('[data-remove-wishlist]');
+    if (removeWishlistBtn) {
+      event.preventDefault();
+      removeFromCollection('wishlist', removeWishlistBtn.getAttribute('data-remove-wishlist'));
+    }
+  });
+
+  function addCourseToCollection(type, courseId) {
+    if (!courseId) return;
+    let list = getCollection(type);
+    if (!list.includes(courseId)) {
+      list = [...list, courseId];
+      setCollection(type, list);
+    }
+    if (type === 'cart') {
+      renderCartPage();
+    } else if (type === 'wishlist') {
+      renderWishlistPage();
+    }
+    syncCommerceButtons();
+  }
+
+  function removeFromCollection(type, courseId) {
+    if (!courseId) return;
+    const list = getCollection(type).filter((id) => id !== courseId);
+    setCollection(type, list);
+    if (type === 'cart') {
+      renderCartPage();
+    } else if (type === 'wishlist') {
+      renderWishlistPage();
+    }
+    syncCommerceButtons();
+  }
+
+  function syncCommerceButtons() {
+    qsa('.js-add-cart').forEach((btn) => {
+      const id = btn.getAttribute('data-course');
+      const inCart = getCollection('cart').includes(id);
+      btn.textContent = inCart ? 'In cart' : 'Add to cart';
+      btn.disabled = inCart;
+    });
+    qsa('.js-add-wishlist').forEach((btn) => {
+      const id = btn.getAttribute('data-course');
+      const wishLabel = btn.querySelector('.btn-label');
+      const inWishlist = getCollection('wishlist').includes(id);
+      if (wishLabel) wishLabel.textContent = inWishlist ? 'Wishlisted' : 'Add to wishlist';
+      btn.disabled = inWishlist;
+    });
   }
 
   // Courses page filtering + rendering
@@ -80,6 +228,7 @@
       .map((c) => courseCard(c, { cta: 'Enroll' }))
       .join('');
     applyFilters();
+    syncCommerceButtons();
   }
 
   if (courseGrid && window.COURSES) {
@@ -111,6 +260,7 @@
       const sec = continueGrid.closest('.section');
       if (sec) sec.style.display = 'none';
     }
+    syncCommerceButtons();
   }
   if (recommendedGrid && Array.isArray(window.COURSES)) {
     const studying = window.COURSES.filter((c) => (c.progress || 0) > 0 || c.enrolled);
@@ -123,6 +273,7 @@
       recs = recs.concat(fillers);
     }
     recommendedGrid.innerHTML = recs.map((c) => courseCard(c, { cta: 'Explore' })).join('');
+    syncCommerceButtons();
   }
 
   // Tabs on course page
@@ -167,7 +318,7 @@
 
     if (curList && course.syllabus) {
       curList.innerHTML = course.syllabus
-        .map((l, i) => `<li>Module ${i + 1} — ${l.title}</li>`)
+        .map((l, i) => `<li>Module ${i + 1} â€” ${l.title}</li>`)
         .join('');
     }
 
@@ -271,7 +422,7 @@
   if (markBtn) {
     markBtn.addEventListener('click', () => {
       markBtn.disabled = true;
-      markBtn.textContent = 'Marked as Complete ✔';
+      markBtn.textContent = 'Marked as Complete âœ”';
       setTimeout(() => {
         markBtn.disabled = false;
         markBtn.textContent = 'Mark Lesson Complete';
@@ -335,58 +486,52 @@
     // If user is logged in but avatar/menu missing (e.g., on non-dashboard pages), inject them
     let user = null;
     try { const raw = localStorage.getItem('lernioUser'); if (raw) user = JSON.parse(raw); } catch {}
-    if (user && (!btn || !menu)) {
-      // Replace Sign in with avatar if present
-      const auth = document.querySelector('.topbar .auth');
-      if (auth && !btn) {
-        auth.innerHTML = '<button id="avatarBtn" class="avatar" aria-label="Account"><span>PB</span></button>';
-        btn = byId('avatarBtn');
-      }
-      if (!menu) {
-        const overlay = document.createElement('div');
-        overlay.id = 'userMenu';
-        overlay.className = 'user-menu';
-        overlay.setAttribute('aria-hidden','true');
-        overlay.innerHTML = `
-          <div class="user-menu__backdrop" data-action="close"></div>
-          <div class="user-menu__panel" role="menu">
-            <div class="user-menu__header">
-              <div class="user-menu__avatar">PB</div>
-              <div>
-                <div id="umName" class="user-menu__name">User</div>
-                <div id="umEmail" class="user-menu__email">user@example.com</div>
-              </div>
-            </div>
-            <ul class="user-menu__list">
-              <li><a class="user-menu__item" href="my-learning.html">My learning</a></li>
-              <li><a class="user-menu__item" href="#">My cart</a></li>
-              <li><a class="user-menu__item" href="#">Wishlist</a></li>
-              <li><a class="user-menu__item" href="#">Instructor dashboard</a></li>
-            </ul>
-            <ul class="user-menu__list user-menu__section">
-              <li><a class="user-menu__item" href="#">Notifications <span class="um-badge">8</span></a></li>
-              <li><a class="user-menu__item" href="#">Messages <span class="um-badge">9+</span></a></li>
-            </ul>
-            <ul class="user-menu__list user-menu__section">
-              <li><a class="user-menu__item" href="settings.html">Account settings</a></li>
-              <li><a class="user-menu__item" href="#">Payment methods</a></li>
-              <li><a class="user-menu__item" href="#">Subscriptions</a></li>
-              <li><a class="user-menu__item" href="#">Credits</a></li>
-              <li><a class="user-menu__item" href="#">Purchase history</a></li>
-            </ul>
-            <ul class="user-menu__list user-menu__section">
-              <li><a class="user-menu__item" href="#">Language <span style=\"color:var(--color-muted)\">English</span></a></li>
-              <li><a class="user-menu__item" href="profile.html">Public profile</a></li>
-              <li><a class="user-menu__item" href="profile.html">Edit profile</a></li>
-            </ul>
-            <ul class="user-menu__list user-menu__section">
-              <li><a class="user-menu__item" href="#">Help and Support</a></li>
-              <li><a id="logoutBtn" class="user-menu__item" href="#">Log out</a></li>
-            </ul>
-          </div>`;
-        document.body.appendChild(overlay);
-        menu = byId('userMenu');
-      }
+    const menuTemplate = `
+      <div class="user-menu__backdrop" data-action="close"></div>
+      <div class="user-menu__panel" role="menu">
+        <div class="user-menu__header">
+          <div class="user-menu__avatar">PB</div>
+          <div>
+            <div id="umName" class="user-menu__name">User</div>
+            <div id="umEmail" class="user-menu__email">user@example.com</div>
+          </div>
+        </div>
+        <ul class="user-menu__list">
+          <li><a class="user-menu__item" href="my-learning.html">My learning</a></li>
+          <li><a class="user-menu__item" href="cart.html">My cart</a></li>
+          <li><a class="user-menu__item" href="wishlist.html">Wishlist</a></li>
+          <li><a class="user-menu__item" href="#">Instructor dashboard</a></li>
+        </ul>
+        <ul class="user-menu__list user-menu__section">
+          <li><a class="user-menu__item" href="#">Notifications <span class="um-badge">8</span></a></li>
+          <li><a class="user-menu__item" href="#">Messages <span class="um-badge">9+</span></a></li>
+        </ul>
+        <ul class="user-menu__list user-menu__section">
+          <li><a class="user-menu__item" href="settings.html">Account settings</a></li>
+          <li><a class="user-menu__item" href="#">Payment methods</a></li>
+          <li><a class="user-menu__item" href="#">Subscriptions</a></li>
+          <li><a class="user-menu__item" href="#">Credits</a></li>
+          <li><a class="user-menu__item" href="#">Purchase history</a></li>
+        </ul>
+        <ul class="user-menu__list user-menu__section">
+          <li><a class="user-menu__item" href="#">Language <span style="color:var(--color-muted)">English</span></a></li>
+          <li><a class="user-menu__item" href="profile.html">Public profile</a></li>
+          <li><a class="user-menu__item" href="profile.html">Edit profile</a></li>
+        </ul>
+        <ul class="user-menu__list user-menu__section">
+          <li><a class="user-menu__item" href="#">Help and Support</a></li>
+          <li><a id="logoutBtn" class="user-menu__item" href="#">Log out</a></li>
+        </ul>
+      </div>`;
+    if (!menu) {
+      menu = document.createElement('div');
+      menu.id = 'userMenu';
+      menu.className = 'user-menu';
+      menu.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(menu);
+    }
+    if (!menu.innerHTML.trim()) {
+      menu.innerHTML = menuTemplate;
     }
     if (!menu || !btn) return;
     const backdrop = menu.querySelector('[data-action="close"]');
@@ -488,7 +633,7 @@
           <div class="program-card__body">
             <div class="program-card__provider">${p.provider}</div>
             <h3 class="program-card__title">${p.title}</h3>
-            <div class="program-card__meta">${p.duration} · ${p.mode} · ${p.schedule}</div>
+            <div class="program-card__meta">${p.duration} Â· ${p.mode} Â· ${p.schedule}</div>
             <div class="program-card__actions">
               <a class="btn btn--primary" href="${link}">Enroll</a>
             </div>
@@ -519,7 +664,7 @@
         showMoreBtn.setAttribute('aria-expanded', String(expanded));
         const icon = showMoreBtn.querySelector('.icon');
         const label = showMoreBtn.querySelector('.label');
-        if (icon) icon.textContent = expanded ? '−' : '＋';
+        if (icon) icon.textContent = expanded ? 'âˆ’' : 'ï¼‹';
         if (label) label.textContent = expanded ? 'Show less' : 'Show more';
       });
     }
@@ -531,6 +676,7 @@
     if (!grid || !Array.isArray(window.COURSES)) return;
     const popular = window.COURSES.slice(0, 12);
     grid.innerHTML = popular.map((c) => courseCard(c, { cta: 'Enroll' })).join('');
+    syncCommerceButtons();
   })();
 
   // Testimonial carousel
@@ -603,6 +749,7 @@
         const cta = showProgress ? 'Continue' : (c.enrolled ? 'Open' : 'Enroll');
         return courseCard(c, { showProgress, cta });
       }).join('');
+      syncCommerceButtons();
     }
 
     updateCounts();
@@ -615,12 +762,36 @@
   })();
   
   initInstructor();
+  initProfileTabs();
+  initCartPage();
+  initWishlistPage();
 
   function initInstructor() {
     const createdCoursesWrap = byId('createdCourses');
     const publishBtn = byId('publishBtn');
     const wizardFields = qsa('[data-field]');
     if (!createdCoursesWrap && !publishBtn && !wizardFields.length) return;
+
+    let fieldsBound = false;
+    const dynamicFieldConfigs = {
+      learn: {
+        prefix: 'learn',
+        min: 4,
+        itemSelector: '.response-field',
+        fieldSelector: '.response-input',
+        counterSelector: '.counter'
+      },
+      prerequisites: {
+        prefix: 'prerequisites',
+        min: 1,
+        itemSelector: 'textarea.response-area[data-field^="prerequisites"]'
+      },
+      audience: {
+        prefix: 'audience',
+        min: 1,
+        itemSelector: 'textarea.response-area[data-field^="audience"]'
+      }
+    };
 
     const statusTargets = [byId('courseStatus'), byId('publishStatus')].filter(Boolean);
     const coverPreview = byId('coverPreview');
@@ -641,6 +812,8 @@
     let courseDraft = Object.assign({}, defaultDraft, loadDraft());
 
     renderCreatedCourses();
+    migrateLegacyDraftFields();
+    setupDynamicResponseFields();
     hydrateFields();
     bindFieldEvents();
     initFileUi();
@@ -671,34 +844,151 @@
       saveDraft();
     }
 
+    function migrateLegacyDraftFields() {
+      if (courseDraft.prerequisites && !courseDraft.prerequisites1) {
+        courseDraft.prerequisites1 = courseDraft.prerequisites;
+        delete courseDraft.prerequisites;
+      }
+      if (courseDraft.audience && !courseDraft.audience1) {
+        courseDraft.audience1 = courseDraft.audience;
+        delete courseDraft.audience;
+      }
+    }
+
+    function setupDynamicResponseFields() {
+      ['learn', 'prerequisites', 'audience'].forEach((group) => ensureFieldsForGroup(group));
+      qsa('[data-add-field]').forEach((button) => {
+        button.addEventListener('click', () => handleAddMoreClick(button));
+      });
+    }
+
+    function ensureFieldsForGroup(group) {
+      const config = dynamicFieldConfigs[group];
+      if (!config) return;
+      const { block, button } = getDynamicBlock(group);
+      if (!block || !button) return;
+      const nodes = getGroupNodes(block, config);
+      const desiredCount = Math.max(config.min, getStoredCount(config.prefix));
+      for (let index = nodes.length + 1; index <= desiredCount; index += 1) {
+        const entry = createDynamicFieldNode(config, block, index);
+        if (!entry) break;
+        block.insertBefore(entry.node, button);
+        registerField(entry.field);
+      }
+    }
+
+    function getDynamicBlock(group) {
+      const button = document.querySelector(`[data-add-field="${group}"]`);
+      return { button, block: button ? button.closest('.question-block') : null };
+    }
+
+    function createDynamicFieldNode(config, block, index) {
+      if (!block) return null;
+      const template = block.querySelector(config.itemSelector);
+      if (!template) return null;
+      const node = template.cloneNode(true);
+      const field = getFieldFromNode(node, config);
+      if (!field) return null;
+      const fieldName = `${config.prefix}${index}`;
+      field.value = '';
+      field.name = fieldName;
+      field.setAttribute('data-field', fieldName);
+      if (config.counterSelector) {
+        const counter = node.querySelector(config.counterSelector);
+        if (counter) {
+          counter.textContent = field.maxLength || counter.textContent || '';
+        }
+      }
+      return { node, field };
+    }
+
+    function getGroupNodes(block, config) {
+      if (!block) return [];
+      return qsa(config.itemSelector, block).filter((node) => {
+        const field = getFieldFromNode(node, config);
+        const key = field?.getAttribute('data-field') || '';
+        return key.startsWith(config.prefix);
+      });
+    }
+
+    function getFieldFromNode(node, config) {
+      if (!node) return null;
+      return config.fieldSelector ? node.querySelector(config.fieldSelector) : node;
+    }
+
+    function registerField(field) {
+      if (!field || wizardFields.includes(field)) return;
+      wizardFields.push(field);
+      if (fieldsBound) bindField(field);
+    }
+
+    function deregisterField(field) {
+      if (!field) return;
+      const index = wizardFields.indexOf(field);
+      if (index !== -1) wizardFields.splice(index, 1);
+    }
+
+    function getStoredCount(prefix) {
+      const regex = new RegExp(`^${prefix}(\\d+)$`);
+      return Object.keys(courseDraft).filter((key) => regex.test(key)).length;
+    }
+
+    function handleAddMoreClick(button) {
+      const group = button.getAttribute('data-add-field');
+      const config = dynamicFieldConfigs[group];
+      if (!config) return;
+      const block = button.closest('.question-block');
+      if (!block) return;
+      const nodes = getGroupNodes(block, config);
+      const entry = createDynamicFieldNode(config, block, nodes.length + 1);
+      if (!entry) return;
+      block.insertBefore(entry.node, button);
+      registerField(entry.field);
+      const key = entry.field.getAttribute('data-field');
+      if (key) updateDraft(key, '');
+    }
+
+    function hydrateField(field) {
+      const key = field.getAttribute('data-field');
+      if (!key) return;
+      const stored = courseDraft[key];
+      if (field.type === 'radio') {
+        const targetValue = stored ?? defaultDraft[key];
+        field.checked = field.value === targetValue || (!stored && field.checked);
+        if (field.checked) courseDraft[key] = field.value;
+      } else if (field.type === 'file') {
+        return;
+      } else if (stored !== undefined) {
+        field.value = stored;
+      } else if (defaultDraft[key] && field.tagName === 'SELECT') {
+        field.value = defaultDraft[key];
+        courseDraft[key] = defaultDraft[key];
+      }
+    }
+
     function hydrateFields() {
       wizardFields.forEach((field) => {
-        const key = field.getAttribute('data-field');
-        if (!key) return;
-        const stored = courseDraft[key];
-        if (field.type === 'radio') {
-          const targetValue = stored ?? defaultDraft[key];
-          field.checked = field.value === targetValue || (!stored && field.checked);
-          if (field.checked) courseDraft[key] = field.value;
-        } else if (field.type === 'file') {
-          return;
-        } else if (stored !== undefined) {
-          field.value = stored;
-        } else if (defaultDraft[key] && field.tagName === 'SELECT') {
-          field.value = defaultDraft[key];
-          courseDraft[key] = defaultDraft[key];
-        }
+        hydrateField(field);
       });
+    }
+
+    function getFieldEventName(field) {
+      return field.type === 'file' || field.type === 'radio' || field.tagName === 'SELECT'
+        ? 'change'
+        : 'input';
+    }
+
+    function bindField(field) {
+      if (!field) return;
+      const eventName = getFieldEventName(field);
+      field.addEventListener(eventName, () => handleFieldInput(field));
     }
 
     function bindFieldEvents() {
       wizardFields.forEach((field) => {
-        const eventName =
-          field.type === 'file' || field.type === 'radio' || field.tagName === 'SELECT'
-            ? 'change'
-            : 'input';
-        field.addEventListener(eventName, () => handleFieldInput(field));
+        bindField(field);
       });
+      fieldsBound = true;
     }
 
     function handleFieldInput(field) {
@@ -814,11 +1104,11 @@
     function buildCoursePayload() {
       const title = (courseDraft.landingTitle || '').trim();
       if (!title) return { error: 'Add a course title before publishing.', pane: 'pane-landing' };
-      const description = (courseDraft.landingDescription || courseDraft.prerequisites || courseDraft.audience || '').trim();
+      const prerequisitesList = collectSequentialFields('prerequisites');
+      const audienceList = collectSequentialFields('audience');
+      const description = (courseDraft.landingDescription || prerequisitesList[0] || audienceList[0] || '').trim();
       if (!description) return { error: 'Provide a short description so learners know what to expect.', pane: 'pane-landing' };
-      const learnings = ['learn1', 'learn2', 'learn3', 'learn4']
-        .map((key) => (courseDraft[key] || '').trim())
-        .filter(Boolean);
+      const learnings = collectSequentialFields('learn');
       if (!learnings.length) return { error: 'Share at least one learning outcome in Intended learners.', pane: 'pane-basic' };
       const category = (courseDraft.categoryCustom || courseDraft.category || 'General').trim();
       const tags = (courseDraft.courseTags || '')
@@ -845,6 +1135,8 @@
         language,
         primaryTopic: courseDraft.primaryTopic || '',
         learnings,
+        prerequisites: prerequisitesList,
+        audience: audienceList,
         promoVideo: courseDraft.promoName || '',
         price: courseDraft.pricingOption === 'free' ? 0 : Number(courseDraft.price || 0),
         discountType: courseDraft.pricingOption || 'none',
@@ -889,6 +1181,7 @@
     }
 
     function resetWizard() {
+      resetDynamicGroups();
       wizardFields.forEach((field) => {
         const key = field.getAttribute('data-field');
         if (!key) return;
@@ -909,6 +1202,40 @@
       refreshCharCounters();
     }
 
+    function resetDynamicGroups() {
+      Object.keys(dynamicFieldConfigs).forEach((group) => {
+        const config = dynamicFieldConfigs[group];
+        if (!config) return;
+        const { block } = getDynamicBlock(group);
+        if (!block) return;
+        const nodes = getGroupNodes(block, config);
+        while (nodes.length > config.min) {
+          const node = nodes.pop();
+          if (!node) continue;
+          const field = getFieldFromNode(node, config);
+          if (!field) continue;
+          const key = field.getAttribute('data-field');
+          if (key) delete courseDraft[key];
+          deregisterField(field);
+          node.remove();
+        }
+      });
+    }
+
+    function collectSequentialFields(prefix) {
+      const regex = new RegExp(`^${prefix}(\\d+)$`);
+      return Object.keys(courseDraft)
+        .map((key) => {
+          const match = key.match(regex);
+          if (!match) return null;
+          return { value: courseDraft[key], index: Number(match[1]) };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.index - b.index)
+        .map((entry) => (entry.value || '').trim())
+        .filter(Boolean);
+    }
+
     function renderCreatedCourses() {
       if (!createdCoursesWrap) return;
       if (!customCourses.length) {
@@ -918,6 +1245,137 @@
       createdCoursesWrap.innerHTML = customCourses
         .map((course) => courseCard(course, { cta: 'Preview' }))
         .join('');
+      syncCommerceButtons();
     }
   }
+
+  function initProfileTabs() {
+    const tabContainer = document.querySelector('.tabs-line');
+    if (!tabContainer) return;
+    const tabs = qsa('[data-tab]', tabContainer);
+    const panels = qsa('[data-panel]');
+    if (!tabs.length || !panels.length) return;
+    const validTargets = new Set(panels.map((panel) => panel.getAttribute('data-panel')));
+    const defaultTarget = tabs[0]?.getAttribute('data-tab') || panels[0]?.getAttribute('data-panel');
+
+    const normalizeTarget = (value) => {
+      if (!value) return null;
+      const stripped = value.replace(/^#/, '');
+      const candidate = stripped.replace(/^panel-/, '');
+      return validTargets.has(candidate) ? candidate : null;
+    };
+
+    const showTab = (target) => {
+      const resolvedTarget = validTargets.has(target) ? target : defaultTarget;
+      if (!resolvedTarget) return;
+      tabs.forEach((tab) => {
+        const isActive = tab.getAttribute('data-tab') === resolvedTarget;
+        tab.classList.toggle('is-active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+      panels.forEach((panel) => {
+        panel.classList.toggle('is-active', panel.getAttribute('data-panel') === resolvedTarget);
+      });
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        showTab(tab.getAttribute('data-tab'));
+      });
+    });
+
+    window.addEventListener('hashchange', () => {
+      const target = normalizeTarget(window.location.hash);
+      if (target) showTab(target);
+    });
+
+    const initialTarget = normalizeTarget(window.location.hash) || defaultTarget;
+    showTab(initialTarget);
+  }
+
+  function initCartPage() {
+    if (!byId('cartList')) return;
+    renderCartPage();
+  }
+
+  function initWishlistPage() {
+    if (!byId('wishlistList')) return;
+    renderWishlistPage();
+  }
+
+  function renderCartPage() {
+    const listNode = byId('cartList');
+    const countNode = byId('cartCount');
+    const totalNode = byId('cartTotal');
+    if (!listNode) return;
+    const items = getCollection('cart');
+    if (!items.length) {
+      listNode.innerHTML = '<p class="empty-state">Your cart is empty. Browse courses and add them to continue.</p>';
+      if (countNode) countNode.textContent = '0';
+      if (totalNode) totalNode.textContent = formatPrice(0);
+      return;
+    }
+    let total = 0;
+    const markup = items
+      .map((id) => {
+        const course = getCourseById(id);
+        if (!course) return '';
+        const price = resolveCoursePrice(course);
+        total += price;
+        return buildCommerceCard(course, 'cart', price);
+      })
+      .filter(Boolean)
+      .join('');
+    listNode.innerHTML = markup || '<p class="empty-state">Your cart is empty.</p>';
+    if (countNode) countNode.textContent = String(items.length);
+    if (totalNode) totalNode.textContent = formatPrice(total);
+  }
+
+  function renderWishlistPage() {
+    const listNode = byId('wishlistList');
+    if (!listNode) return;
+    const items = getCollection('wishlist');
+    if (!items.length) {
+      listNode.innerHTML = '<p class="empty-state">Your wishlist is empty. Tap the heart icon on any course to save it.</p>';
+      return;
+    }
+    const markup = items
+      .map((id) => {
+        const course = getCourseById(id);
+        if (!course) return '';
+        return buildCommerceCard(course, 'wishlist', resolveCoursePrice(course));
+      })
+      .filter(Boolean)
+      .join('');
+    listNode.innerHTML = markup || '<p class="empty-state">Your wishlist is empty.</p>';
+    syncCommerceButtons();
+  }
+
+  function buildCommerceCard(course, type, priceValue) {
+    if (!course) return '';
+    const price = formatPrice(priceValue ?? resolveCoursePrice(course));
+    const levelLabel = (course.level || 'beginner').charAt(0).toUpperCase() + (course.level || 'beginner').slice(1);
+    const meta = `${levelLabel} &middot; ${course.lessonsCount || 0} lessons`;
+    const cover = course.cover || './assets/img/placeholder.svg';
+    const removeAttr = type === 'cart' ? `data-remove-cart="${course.id}"` : `data-remove-wishlist="${course.id}"`;
+    const actions =
+      type === 'cart'
+        ? `<div class="commerce-actions"><button class="btn btn--ghost" ${removeAttr}>Remove</button></div>`
+        : `<div class="commerce-actions"><button class="btn btn--secondary js-add-cart" data-course="${course.id}">Add to cart</button><button class="btn btn--ghost" ${removeAttr}>Remove</button></div>`;
+    return `
+      <article class="commerce-card">
+        <img class="commerce-card__media" src="${cover}" alt="${course.title}" />
+        <div class="commerce-card__body">
+          <h3>${course.title}</h3>
+          <p>${meta}</p>
+        </div>
+        <div class="commerce-card__meta">
+          <strong>${price}</strong>
+          ${actions}
+        </div>
+      </article>
+    `;
+  }
+
+  syncCommerceButtons();
 })();

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cart</title>
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <link rel="icon" href="./assets/img/logo.svg" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <a class="brand" href="index.html">
+          <img src="./assets/img/logo.svg" alt="Lernio" class="brand__logo" />
+          <span class="brand__name">Lernio</span>
+        </a>
+        <div class="search">
+          <span class="search__icon" aria-hidden="true">dY"Z</span>
+          <input type="search" placeholder="Search courses" aria-label="Search courses" />
+        </div>
+        <nav class="nav">
+          <a class="nav__link" href="dashboard.html">Dashboard</a>
+          <a class="nav__link" href="courses.html">Courses</a>
+          <a class="nav__link" href="my-learning.html">My Learning</a>
+          <a class="nav__link" href="instructor.html">Instructor</a>
+          <a class="nav__link nav__link--active" href="cart.html">Cart</a>
+          <a class="nav__link" href="wishlist.html">Wishlist</a>
+        </nav>
+        <button id="avatarBtn" class="avatar" aria-label="Account">
+          <span>PB</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="container page">
+      <section class="section" aria-labelledby="cartTitle">
+        <div class="section__header">
+          <div>
+            <h1 id="cartTitle">Your cart</h1>
+            <p class="field-note">Review the courses you plan to enroll in and proceed to checkout when you are ready.</p>
+          </div>
+        </div>
+
+        <div class="commerce-layout">
+          <div id="cartList" class="commerce-list"></div>
+          <aside id="cartSummary" class="commerce-summary">
+            <h2>Summary</h2>
+            <p><span id="cartCount">0</span> courses</p>
+            <p class="commerce-total">
+              Total
+              <strong id="cartTotal">$0</strong>
+            </p>
+            <button class="btn btn--primary btn--full" type="button">Proceed to checkout</button>
+            <small class="field-note">Checkout is simulated for this prototype.</small>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <div id="userMenu" class="user-menu" aria-hidden="true"></div>
+    <script src="./assets/js/courses.data.js"></script>
+    <script src="./assets/js/app.js"></script>
+  </body>
+</html>

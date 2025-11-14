@@ -11,7 +11,7 @@
   <text x="320" y="160" text-anchor="middle" font-size="18" font-family="Segoe UI, Roboto, Arial" fill="#334155">This certifies that</text>
   <text x="320" y="200" text-anchor="middle" font-size="28" font-family="Segoe UI, Roboto, Arial" font-weight="700" fill="#0f172a">Panashe Banhire</text>
   <text x="320" y="238" text-anchor="middle" font-size="16" font-family="Segoe UI, Roboto, Arial" fill="#334155">has successfully completed the course</text>
-  <text x="320" y="270" text-anchor="middle" font-size="20" font-family="Segoe UI, Roboto, Arial" font-weight="600" fill="#0f172a">Full‑Stack Web Development</text>
+  <text x="320" y="270" text-anchor="middle" font-size="20" font-family="Segoe UI, Roboto, Arial" font-weight="600" fill="#0f172a">Fullstack Web Development</text>
   <g transform="translate(180,300)">
     <rect width="280" height="2" fill="#e5e7eb"/>
   </g>
