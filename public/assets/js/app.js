@@ -108,8 +108,14 @@ const formatMeta = (level, lessonsCount) => {
          <span class="badge">${course.progress}% complete</span>`
       : '';
     const primaryAction = progressHtml
-      ? `<div class="card__actions"><a class="btn btn--primary" href="${courseLink(course.id)}">Continue</a>${progressHtml}</div>`
-      : `<div class="card__actions"><a class="btn btn--primary" href="${courseLink(course.id)}">${cta}</a></div>`;
+      ? `<div class="card__actions">
+            <a class="btn btn--primary" href="${courseLink(course.id)}">Continue</a>
+            <a class="btn btn--ghost" href="${courseLink(course.id)}">View details</a>
+          </div>${progressHtml}`
+      : `<div class="card__actions">
+            <a class="btn btn--primary" href="${courseLink(course.id)}">${cta}</a>
+            <a class="btn btn--ghost" href="${courseLink(course.id)}">View details</a>
+          </div>`;
     const commerceActions = `
       <div class="card__commerce">
         <button class="btn btn--secondary js-add-cart" data-course="${course.id}">Add to cart</button>
@@ -425,7 +431,7 @@ const formatMeta = (level, lessonsCount) => {
       markBtn.textContent = 'Marked as Complete âœ”';
       setTimeout(() => {
         markBtn.disabled = false;
-        markBtn.textContent = 'Mark Lesson Complete';
+        markBtn.textContent = 'Enroll';
       }, 1200);
     });
   }
