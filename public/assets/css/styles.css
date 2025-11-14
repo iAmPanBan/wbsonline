@@ -328,7 +328,9 @@ a:hover { text-decoration: underline; }
 .btn--wishlist {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
+  width: 100%;
 }
 .heart-icon {
   color: #e11d48;
