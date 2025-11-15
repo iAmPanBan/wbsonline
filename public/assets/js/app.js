@@ -324,7 +324,7 @@ const formatMeta = (level, lessonsCount) => {
 
     if (curList && course.syllabus) {
       curList.innerHTML = course.syllabus
-        .map((l, i) => `<li>Module ${i + 1} â€” ${l.title}</li>`)
+        .map((l, i) => `<li>Module ${i + 1} — ${l.title}</li>`)
         .join('');
     }
 
@@ -428,7 +428,7 @@ const formatMeta = (level, lessonsCount) => {
   if (markBtn) {
     markBtn.addEventListener('click', () => {
       markBtn.disabled = true;
-      markBtn.textContent = 'Marked as Complete âœ”';
+      markBtn.textContent = 'Marked as Complete ✔';
       setTimeout(() => {
         markBtn.disabled = false;
         markBtn.textContent = 'Enroll';
@@ -639,7 +639,7 @@ const formatMeta = (level, lessonsCount) => {
           <div class="program-card__body">
             <div class="program-card__provider">${p.provider}</div>
             <h3 class="program-card__title">${p.title}</h3>
-            <div class="program-card__meta">${p.duration} Â· ${p.mode} Â· ${p.schedule}</div>
+            <div class="program-card__meta">${p.duration} · ${p.mode} · ${p.schedule}</div>
             <div class="program-card__actions">
               <a class="btn btn--primary" href="${link}">Enroll</a>
             </div>
@@ -670,7 +670,7 @@ const formatMeta = (level, lessonsCount) => {
         showMoreBtn.setAttribute('aria-expanded', String(expanded));
         const icon = showMoreBtn.querySelector('.icon');
         const label = showMoreBtn.querySelector('.label');
-        if (icon) icon.textContent = expanded ? 'âˆ’' : 'ï¼‹';
+        if (icon) icon.textContent = expanded ? '−' : '＋';
         if (label) label.textContent = expanded ? 'Show less' : 'Show more';
       });
     }
