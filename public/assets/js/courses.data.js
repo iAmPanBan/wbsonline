@@ -1,5 +1,216 @@
-// Generated from Hatch Business Academy trainings
+// Generated from Winfield Business School trainings
 window.COURSES = [
+  {
+    id: 'winfield-executive-development-program',
+    title: 'Winfield Executive Development Program',
+    level: 'advanced',
+    lessonsCount: 18,
+    description: 'Accelerates senior leaders with immersive strategy, governance, and decision-making labs tailored for African markets.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'winfield-management-development-program',
+    title: 'Winfield Management Development Program',
+    level: 'intermediate',
+    lessonsCount: 16,
+    description: 'Builds core management capabilities across finance, operations, and people leadership for emerging managers.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'startup-track-from-idea-to-launch',
+    title: 'Startup Track: From Idea to Launch',
+    level: 'beginner',
+    lessonsCount: 14,
+    description: 'Guides founders through validation, prototyping, and investor readiness to move from concept to market launch.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'women-in-leadership-certification-program',
+    title: 'Women in Leadership Certification Program',
+    level: 'advanced',
+    lessonsCount: 12,
+    description: 'Equips women executives with confident leadership presence, influence skills, and boardroom readiness.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'leadership-management-in-healthcare-institutions',
+    title: 'Leadership & Management in Healthcare Institutions',
+    level: 'intermediate',
+    lessonsCount: 15,
+    description: 'Strengthens hospital and clinic leaders in quality, compliance, and patient-centered operations.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'strategy-leadership-for-growth-oriented-founders',
+    title: 'Strategy & Leadership for Growth Oriented Founders',
+    level: 'advanced',
+    lessonsCount: 16,
+    description: 'Helps founders design scale strategies, metrics, and leadership systems for rapid expansion.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'project-management-training-program',
+    title: 'Project Management Training Program',
+    level: 'intermediate',
+    lessonsCount: 13,
+    description: 'Covers planning, execution, risk control, and stakeholder engagement using practical toolkits.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'report-writing-skills-training',
+    title: 'Report Writing Skills Training',
+    level: 'beginner',
+    lessonsCount: 10,
+    description: 'Teaches structured thinking, data storytelling, and executive-ready documentation techniques.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'communication-skills-training-program',
+    title: 'Communication Skills Training Program',
+    level: 'beginner',
+    lessonsCount: 12,
+    description: 'Develops persuasive communications, feedback delivery, and high-impact presentation habits.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'building-organizational-culture-training-program',
+    title: 'Building Organizational Culture Training Program',
+    level: 'intermediate',
+    lessonsCount: 11,
+    description: 'Shows leaders how to define values, embed rituals, and measure culture health for engaged teams.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'leadership-management-in-educational-institutions',
+    title: 'Leadership & Management in Educational Institutions',
+    level: 'intermediate',
+    lessonsCount: 14,
+    description: 'Equips school heads with curriculum leadership, teacher development, and governance practices.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'negotiation-skills-training-program',
+    title: 'Negotiation Skills Training Program',
+    level: 'advanced',
+    lessonsCount: 9,
+    description: 'Builds principled negotiation tactics, stakeholder mapping, and value-creation techniques.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'hr-risk-management-training-program',
+    title: 'HR Risk Management Training Program',
+    level: 'advanced',
+    lessonsCount: 10,
+    description: 'Addresses compliance, workforce analytics, and proactive mitigation of people-related risks.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'public-speaking-training-program',
+    title: 'Public Speaking Training Program',
+    level: 'beginner',
+    lessonsCount: 8,
+    description: 'Coaches professionals to craft compelling narratives and deliver confident executive presentations.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  },
+  {
+    id: 'change-management-training-program',
+    title: 'Change Management Training Program',
+    level: 'intermediate',
+    lessonsCount: 12,
+    description: 'Provides frameworks for stakeholder alignment, communication, and sustaining transformation.',
+    cover: './assets/img/placeholder.svg',
+    enrolled: false,
+    progress: 0,
+    syllabus: [
+      { title: 'Program overview', duration: '08:00', video: '' },
+      { title: 'Application lab', duration: '12:00', video: '' }
+    ]
+  }
+,
   {
     id: 'sales-force-effectiveness-training',
     title: 'Sales Force Effectiveness Training',
