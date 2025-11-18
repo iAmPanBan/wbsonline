@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Messages</title>
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <link rel="icon" href="./assets/img/logo.svg" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <a class="brand" href="index.html">
+          <img src="./assets/img/logo.svg" alt="Lernio" class="brand__logo" />
+          <span class="brand__name">Lernio</span>
+        </a>
+        <div class="search">
+          <span class="search__icon" aria-hidden="true">dY"?</span>
+          <input type="search" placeholder="Search courses" aria-label="Search courses" />
+        </div>
+        <nav class="nav">
+          <a class="nav__link" href="dashboard.html">Dashboard</a>
+          <a class="nav__link" href="courses.html">Courses</a>
+          <a class="nav__link" href="my-learning.html">My Learning</a>
+          <a class="nav__link" href="instructor.html">Instructor</a>
+          <a class="nav__link" href="cart.html">Cart</a>
+          <a class="nav__link" href="wishlist.html">Wishlist</a>
+        </nav>
+        <button id="avatarBtn" class="avatar" aria-label="Account"><span>PB</span></button>
+      </div>
+    </header>
+
+    <main class="container page">
+      <section class="section" aria-labelledby="messages-heading">
+        <div class="section__header">
+          <h1 id="messages-heading">Messages</h1>
+          <p class="field-note">Conversations with learners and corporate partners.</p>
+        </div>
+        <div class="card">
+          <h3>Corporate Programs Team</h3>
+          <p>"Please share the updated outline for the Leadership &amp; Management cohort."</p>
+        </div>
+        <div class="card">
+          <h3>Startup Track Coaches</h3>
+          <p>"Demo day materials are ready for review."</p>
+        </div>
+      </section>
+
+    </main>
+
+    <div id="userMenu" class="user-menu" aria-hidden="true"></div>
+    <script src="./assets/js/courses.data.js"></script>
+    <script src="./assets/js/app.js"></script>
+  </body>
+</html>

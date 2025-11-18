@@ -624,9 +624,7 @@ const formatMeta = (level, lessonsCount) => {
   // Top-rated programs rendering and filtering
   (function initPrograms() {
     const grid = document.getElementById('programGrid');
-    const sidebar = document.querySelector('#programCategories')?.closest('.sidebar');
-    const showMoreBtn = document.querySelector('#programCategories .sidebar__item[data-role="show-more"]');
-    const catButtons = Array.from(document.querySelectorAll('#programCategories .sidebar__item:not([data-role="show-more"])'));
+    const catButtons = Array.from(document.querySelectorAll('#programCategories .sidebar__item'));
     if (!grid || !Array.isArray(window.TOP_PROGRAMS)) return;
 
     function card(p) {
@@ -639,9 +637,9 @@ const formatMeta = (level, lessonsCount) => {
           <div class="program-card__body">
             <div class="program-card__provider">${p.provider}</div>
             <h3 class="program-card__title">${p.title}</h3>
-            <div class="program-card__meta">${p.duration} · ${p.mode} · ${p.schedule}</div>
+            <p class="program-card__meta">${p.description}</p>
             <div class="program-card__actions">
-              <a class="btn btn--primary" href="${link}">Enroll</a>
+              <a class="btn btn--primary" href="${link}">View details</a>
             </div>
           </div>
         </article>
@@ -649,31 +647,24 @@ const formatMeta = (level, lessonsCount) => {
     }
 
     function render(category) {
-      const list = category && category !== 'Popular Courses'
-        ? window.TOP_PROGRAMS.filter((p) => p.category === category)
+      const normalized = (category || '').trim().toLowerCase();
+      const list = normalized
+        ? window.TOP_PROGRAMS.filter((p) => (p.category || '').toLowerCase() === normalized)
         : window.TOP_PROGRAMS.slice(0, 6);
-      grid.innerHTML = list.map(card).join('');
+      grid.innerHTML = list.length
+        ? list.map(card).join('')
+        : '<p class="empty-state">No programs available for this category yet.</p>';
     }
 
-    render('Popular Courses');
+    const defaultCategory = catButtons[0]?.getAttribute('data-cat') || '';
+    if (catButtons[0]) catButtons[0].classList.add('is-active');
+    render(defaultCategory);
 
     catButtons.forEach((btn) => btn.addEventListener('click', () => {
       catButtons.forEach((b) => b.classList.remove('is-active'));
       btn.classList.add('is-active');
-      render(btn.getAttribute('data-cat') || 'Popular Courses');
+      render(btn.getAttribute('data-cat') || '');
     }));
-
-    if (showMoreBtn && sidebar) {
-      showMoreBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('is-expanded');
-        const expanded = sidebar.classList.contains('is-expanded');
-        showMoreBtn.setAttribute('aria-expanded', String(expanded));
-        const icon = showMoreBtn.querySelector('.icon');
-        const label = showMoreBtn.querySelector('.label');
-        if (icon) icon.textContent = expanded ? '−' : '＋';
-        if (label) label.textContent = expanded ? 'Show less' : 'Show more';
-      });
-    }
   })();
 
   // Popular Courses section (catalog preview)
