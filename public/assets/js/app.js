@@ -39,6 +39,20 @@ const formatMeta = (level, lessonsCount) => {
 
 
   const courseLink = (id) => `course.html?id=${encodeURIComponent(id)}`;
+  const programCategories = {};
+  if (Array.isArray(window.TOP_PROGRAMS)) {
+    window.TOP_PROGRAMS.forEach((program) => {
+      if (program?.courseId) {
+        const label = program.category || program.provider || '';
+        if (label && !programCategories[program.courseId]) {
+          programCategories[program.courseId] = label;
+        }
+      }
+    });
+  }
+
+  const resolveCourseCategory = (course) =>
+    course?.category || programCategories[course?.id] || course?.provider || '';
 
   const STORAGE_KEYS = {
     cart: 'lernioCartItems',
@@ -125,8 +139,9 @@ const formatMeta = (level, lessonsCount) => {
         </button>
       </div>
     `;
+    const categoryLabel = resolveCourseCategory(course) || '';
     return `
-      <article class="card card--course" data-level="${course.level}" data-title="${course.title}">
+      <article class="card card--course" data-level="${course.level}" data-title="${course.title}" data-category="${categoryLabel}">
         <a href="${courseLink(course.id)}" class="card__media">
           <img src="${course.cover}" alt="${course.title}" />
         </a>
@@ -216,17 +231,21 @@ const formatMeta = (level, lessonsCount) => {
   const chips = qsa('.chip');
   let currentFilter = 'all';
 
-  function applyFilters() {
-    if (!courseGrid) return;
-    const term = (searchInput?.value || '').toLowerCase();
-    qsa('.card--course', courseGrid).forEach((card) => {
-      const title = (card.getAttribute('data-title') || '').toLowerCase();
-      const level = (card.getAttribute('data-level') || 'all').toLowerCase();
-      const matchesText = !term || title.includes(term);
-      const matchesLevel = currentFilter === 'all' || level === currentFilter;
-      card.style.display = matchesText && matchesLevel ? '' : 'none';
-    });
-  }
+    const normalizeCategory = (value) => (value || '').trim().toLowerCase();
+
+    function applyFilters() {
+      if (!courseGrid) return;
+      const term = (searchInput?.value || '').toLowerCase();
+      qsa('.card--course', courseGrid).forEach((card) => {
+        const title = (card.getAttribute('data-title') || '').toLowerCase();
+        const level = (card.getAttribute('data-level') || 'all').toLowerCase();
+        const category = normalizeCategory(card.getAttribute('data-category'));
+        const filter = normalizeCategory(currentFilter);
+        const matchesText = !term || title.includes(term);
+        const matchesLevel = filter === 'all' || level === filter || category === filter;
+        card.style.display = matchesText && matchesLevel ? '' : 'none';
+      });
+    }
 
   function renderCourseGrid() {
     if (!courseGrid || !Array.isArray(window.COURSES)) return;
@@ -237,9 +256,9 @@ const formatMeta = (level, lessonsCount) => {
     syncCommerceButtons();
   }
 
-  if (courseGrid && window.COURSES) {
-    renderCourseGrid();
-  }
+    if (courseGrid && window.COURSES) {
+      renderCourseGrid();
+    }
 
   if (searchInput) {
     searchInput.addEventListener('input', applyFilters);
@@ -506,26 +525,26 @@ const formatMeta = (level, lessonsCount) => {
           <li><a class="user-menu__item" href="my-learning.html">My learning</a></li>
           <li><a class="user-menu__item" href="cart.html">My cart</a></li>
           <li><a class="user-menu__item" href="wishlist.html">Wishlist</a></li>
-          <li><a class="user-menu__item" href="#">Instructor dashboard</a></li>
+          <li><a class="user-menu__item" href="instructor-dashboard.html">Instructor dashboard</a></li>
         </ul>
         <ul class="user-menu__list user-menu__section">
-          <li><a class="user-menu__item" href="#">Notifications <span class="um-badge">8</span></a></li>
-          <li><a class="user-menu__item" href="#">Messages <span class="um-badge">9+</span></a></li>
+          <li><a class="user-menu__item" href="notifications.html">Notifications <span class="um-badge">8</span></a></li>
+          <li><a class="user-menu__item" href="messages.html">Messages <span class="um-badge">9+</span></a></li>
         </ul>
         <ul class="user-menu__list user-menu__section">
           <li><a class="user-menu__item" href="settings.html">Account settings</a></li>
-          <li><a class="user-menu__item" href="#">Payment methods</a></li>
-          <li><a class="user-menu__item" href="#">Subscriptions</a></li>
-          <li><a class="user-menu__item" href="#">Credits</a></li>
-          <li><a class="user-menu__item" href="#">Purchase history</a></li>
+          <li><a class="user-menu__item" href="payment-methods.html">Payment methods</a></li>
+          <li><a class="user-menu__item" href="subscriptions.html">Subscriptions</a></li>
+          <li><a class="user-menu__item" href="credits.html">Credits</a></li>
+          <li><a class="user-menu__item" href="purchase-history.html">Purchase history</a></li>
         </ul>
         <ul class="user-menu__list user-menu__section">
-          <li><a class="user-menu__item" href="#">Language <span style="color:var(--color-muted)">English</span></a></li>
+          <li><a class="user-menu__item" href="language.html">Language <span style="color:var(--color-muted)">English</span></a></li>
           <li><a class="user-menu__item" href="profile.html">Public profile</a></li>
           <li><a class="user-menu__item" href="profile.html">Edit profile</a></li>
         </ul>
         <ul class="user-menu__list user-menu__section">
-          <li><a class="user-menu__item" href="#">Help and Support</a></li>
+          <li><a class="user-menu__item" href="help.html">Help and Support</a></li>
           <li><a id="logoutBtn" class="user-menu__item" href="#">Log out</a></li>
         </ul>
       </div>`;
@@ -625,6 +644,8 @@ const formatMeta = (level, lessonsCount) => {
   (function initPrograms() {
     const grid = document.getElementById('programGrid');
     const catButtons = Array.from(document.querySelectorAll('#programCategories .sidebar__item'));
+    const staticSections = Array.from(document.querySelectorAll('[data-program-section]'));
+    const normalizeCategory = (value) => (value || '').trim().toLowerCase();
     if (!grid || !Array.isArray(window.TOP_PROGRAMS)) return;
 
     function card(p) {
@@ -647,13 +668,18 @@ const formatMeta = (level, lessonsCount) => {
     }
 
     function render(category) {
-      const normalized = (category || '').trim().toLowerCase();
+      const normalized = normalizeCategory(category);
       const list = normalized
-        ? window.TOP_PROGRAMS.filter((p) => (p.category || '').toLowerCase() === normalized)
+        ? window.TOP_PROGRAMS.filter((p) => normalizeCategory(p.category) === normalized)
         : window.TOP_PROGRAMS.slice(0, 6);
       grid.innerHTML = list.length
         ? list.map(card).join('')
         : '<p class="empty-state">No programs available for this category yet.</p>';
+      if (staticSections.length) {
+        staticSections.forEach((section) => {
+          section.style.display = normalized ? 'none' : '';
+        });
+      }
     }
 
     const defaultCategory = catButtons[0]?.getAttribute('data-cat') || '';
@@ -1375,4 +1401,73 @@ const formatMeta = (level, lessonsCount) => {
   }
 
   syncCommerceButtons();
+
+  // Ensure every page has a consistent footer
+  (function ensureFooter() {
+    if (document.querySelector('.site-footer')) return;
+    if (!document.body) return;
+    const footer = document.createElement('footer');
+    footer.className = 'site-footer';
+    footer.innerHTML = `
+      <div class="container site-footer__top">
+        <div class="site-footer__grid">
+          <div>
+            <h4>About WBS</h4>
+            <ul>
+              <li><a href="#">About us</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Contact us</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Investors</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Discover WBS Online</h4>
+            <ul>
+              <li><a href="#">Get the app</a></li>
+              <li><a href="#">Teach with WBS</a></li>
+              <li><a href="subscriptions.html">Plans &amp; pricing</a></li>
+              <li><a href="#">Affiliate</a></li>
+              <li><a href="help.html">Help &amp; Support</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>WBS for Business</h4>
+            <ul>
+              <li><a href="subscriptions.html">Enterprise learning</a></li>
+              <li><a href="#">Instructor partnerships</a></li>
+              <li><a href="#">Leadership cohorts</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Legal &amp; Accessibility</h4>
+            <ul>
+              <li><a href="#">Accessibility statement</a></li>
+              <li><a href="#">Privacy policy</a></li>
+              <li><a href="#">Sitemap</a></li>
+              <li><a href="#">Terms</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <div class="container site-footer__brandline">
+          <div class="brand">
+            <img src="./assets/img/logo.svg" alt="WBS Online" />
+            <strong>WBS Online</strong>
+          </div>
+          <div>&copy; <span id="year"></span> WBS Online. All rights reserved.</div>
+          <div class="site-footer__links">
+            <a href="#">Cookie settings</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(footer);
+    const yearEl = footer.querySelector('#year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+  })();
+
 })();

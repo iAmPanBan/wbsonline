@@ -15,7 +15,7 @@
           <span class="brand__name">Lernio</span>
         </a>
         <div class="search">
-          <span class="search__icon" aria-hidden="true">dY"?</span>
+          <span class="search__icon" aria-hidden="true">&#128269;</span>
           <input type="search" placeholder="Search courses" aria-label="Search courses" />
         </div>
         <nav class="nav">
@@ -36,11 +36,32 @@
           <h1 id="notify-heading">Notifications</h1>
           <p class="field-note">Recent platform alerts and learner activity.</p>
         </div>
-        <ul class="list">
-          <li>New enrollment in Winfield Executive Development Program.</li>
-          <li>Hatch Startup Track assignment submissions due tomorrow.</li>
-          <li>Payment reminder sent to corporate client.</li>
-        </ul>
+        <div class="focus-block focus-block--accent">
+          <h3>Recent alerts</h3>
+          <ul class="list">
+            <li>New enrollment in Winfield Executive Development Program.</li>
+            <li>Hatch Startup Track assignment submissions due tomorrow.</li>
+            <li>Payment reminder sent to corporate client.</li>
+          </ul>
+        </div>
+        <div class="focus-block">
+          <h3>Delivery preferences</h3>
+          <p class="field-note">Choose which alerts should reach your inbox.</p>
+          <label style="display:flex;align-items:center;gap:8px;margin:8px 0;">
+            <input type="checkbox" checked /> Email me about new enrollments
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;margin:8px 0;">
+            <input type="checkbox" checked /> Send reminders for assignments
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;margin:8px 0;">
+            <input type="checkbox" /> SMS alerts for payment activity
+          </label>
+        </div>
+        <div class="focus-block">
+          <h3>System status</h3>
+          <p class="field-note">No incidents reported. Last checked 2 minutes ago.</p>
+          <p>All integrations and video classrooms are operating normally for Winfield and Hatch cohorts.</p>
+        </div>
       </section>
 
     </main>
