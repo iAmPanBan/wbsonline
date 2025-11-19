@@ -16,8 +16,8 @@
     <rect width="280" height="2" fill="#e5e7eb"/>
   </g>
   <g transform="translate(80,330)">
-    <rect width="120" height="40" rx="8" fill="#0E898E"/>
-    <text x="60" y="26" text-anchor="middle" font-size="16" font-family="Segoe UI, Roboto, Arial" fill="#ffffff">Lernio</text>
+    <rect width="160" height="40" rx="8" fill="#0E898E"/>
+    <text x="80" y="26" text-anchor="middle" font-size="16" font-family="Segoe UI, Roboto, Arial" fill="#ffffff">WBS Online</text>
   </g>
   <g transform="translate(460,330)">
     <text x="0" y="16" font-size="12" font-family="Segoe UI, Roboto, Arial" fill="#64748b">ID: STARTUP-00456</text>

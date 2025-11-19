@@ -1402,32 +1402,28 @@ const formatMeta = (level, lessonsCount) => {
 
   syncCommerceButtons();
 
-  // Ensure every page has a consistent footer
+  // Ensure every page has a consistent footer with live links
   (function ensureFooter() {
-    if (document.querySelector('.site-footer')) return;
-    if (!document.body) return;
-    const footer = document.createElement('footer');
-    footer.className = 'site-footer';
-    footer.innerHTML = `
+    const markup = `
       <div class="container site-footer__top">
         <div class="site-footer__grid">
           <div>
             <h4>About WBS</h4>
             <ul>
-              <li><a href="#">About us</a></li>
-              <li><a href="#">Careers</a></li>
-              <li><a href="#">Contact us</a></li>
-              <li><a href="#">Blog</a></li>
-              <li><a href="#">Investors</a></li>
+              <li><a href="about.html">About us</a></li>
+              <li><a href="careers.html">Careers</a></li>
+              <li><a href="contact.html">Contact us</a></li>
+              <li><a href="blog.html">Blog</a></li>
+              <li><a href="investors.html">Investors</a></li>
             </ul>
           </div>
           <div>
             <h4>Discover WBS Online</h4>
             <ul>
-              <li><a href="#">Get the app</a></li>
-              <li><a href="#">Teach with WBS</a></li>
+              <li><a href="coming-soon.html">Get the app</a></li>
+              <li><a href="teach.html">Teach with WBS</a></li>
               <li><a href="subscriptions.html">Plans &amp; pricing</a></li>
-              <li><a href="#">Affiliate</a></li>
+              <li><a href="affiliate.html">Affiliate</a></li>
               <li><a href="help.html">Help &amp; Support</a></li>
             </ul>
           </div>
@@ -1435,17 +1431,17 @@ const formatMeta = (level, lessonsCount) => {
             <h4>WBS for Business</h4>
             <ul>
               <li><a href="subscriptions.html">Enterprise learning</a></li>
-              <li><a href="#">Instructor partnerships</a></li>
-              <li><a href="#">Leadership cohorts</a></li>
+              <li><a href="partnerships.html">Instructor partnerships</a></li>
+              <li><a href="cohorts.html">Leadership cohorts</a></li>
             </ul>
           </div>
           <div>
             <h4>Legal &amp; Accessibility</h4>
             <ul>
-              <li><a href="#">Accessibility statement</a></li>
-              <li><a href="#">Privacy policy</a></li>
-              <li><a href="#">Sitemap</a></li>
-              <li><a href="#">Terms</a></li>
+              <li><a href="accessibility.html">Accessibility statement</a></li>
+              <li><a href="privacy.html">Privacy policy</a></li>
+              <li><a href="sitemap.html">Sitemap</a></li>
+              <li><a href="terms.html">Terms</a></li>
             </ul>
           </div>
         </div>
@@ -1458,16 +1454,31 @@ const formatMeta = (level, lessonsCount) => {
           </div>
           <div>&copy; <span id="year"></span> WBS Online. All rights reserved.</div>
           <div class="site-footer__links">
-            <a href="#">Cookie settings</a>
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
+            <a href="cookies.html">Cookie settings</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
           </div>
         </div>
       </div>
     `;
+
+    const applyFooter = (footer) => {
+      if (!footer) return;
+      footer.classList.add('site-footer');
+      footer.innerHTML = markup;
+      const yearEl = footer.querySelector('#year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+    };
+
+    const footers = document.querySelectorAll('.site-footer');
+    if (footers.length) {
+      footers.forEach(applyFooter);
+      return;
+    }
+    if (!document.body) return;
+    const footer = document.createElement('footer');
+    applyFooter(footer);
     document.body.appendChild(footer);
-    const yearEl = footer.querySelector('#year');
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
   })();
 
 })();
