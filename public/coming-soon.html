@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Coming Soon • WBS Online</title>
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <link rel="icon" href="./assets/img/logo.svg" />
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--color-primary-700), var(--color-accent));
+        display: flex;
+        flex-direction: column;
+      }
+      .coming-hero {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 5vw 80px;
+        color: #fff;
+      }
+      .coming-hero__inner {
+        width: min(1100px, 100%);
+        display: flex;
+        gap: 40px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .coming-copy {
+        flex: 1 1 360px;
+        max-width: 540px;
+      }
+      .coming-eyebrow {
+        letter-spacing: .35em;
+        font-size: .85rem;
+        text-transform: uppercase;
+        opacity: .85;
+        display: inline-block;
+        margin-bottom: 16px;
+      }
+      .coming-copy h1 {
+        margin: 0 0 12px;
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        line-height: 1.2;
+      }
+      .coming-copy p {
+        font-size: 1.1rem;
+        margin: 0 0 26px;
+        color: rgba(255,255,255,.9);
+      }
+      .coming-form {
+        display: grid;
+        gap: 16px;
+      }
+      .coming-input {
+        padding: 14px 18px;
+        border-radius: 999px;
+        border: 0;
+        font-size: 1rem;
+        background: rgba(255,255,255,.2);
+        color: #fff;
+        outline: none;
+      }
+      .coming-input::placeholder { color: rgba(255,255,255,.8); }
+      .coming-btn {
+        padding: 16px 18px;
+        border-radius: 999px;
+        border: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--color-text);
+        background: linear-gradient(90deg, #befffc, #5abfc4);
+        cursor: pointer;
+        transition: transform .2s ease, box-shadow .2s ease;
+      }
+      .coming-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 20px rgba(0,0,0,.2); }
+      .coming-mockup {
+        flex: 1 1 320px;
+        display: flex;
+        justify-content: center;
+      }
+      .phone {
+        width: 320px;
+        max-width: 90vw;
+        aspect-ratio: 9 / 18;
+        background: #fff;
+        border-radius: 36px;
+        padding: 26px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        box-shadow: 0 30px 60px rgba(0,0,0,.25);
+      }
+      .screen {
+        flex: 1;
+        background: linear-gradient(180deg, var(--color-accent), var(--color-primary));
+        border-radius: 26px;
+        padding: 26px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      .bubble {
+        height: 34px;
+        border-radius: 18px;
+        background: rgba(255,255,255,.9);
+      }
+      .bubble--dark { background: rgba(0,0,0,.18); width: 70%; }
+      .bubble--wide { width: 90%; }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <a class="brand" href="index.html">
+          <img src="./assets/img/logo.svg" alt="WBS Online" class="brand__logo" />
+          <span class="brand__name">WBS Online</span>
+        </a>
+        <div class="search">
+          <span class="search__icon" aria-hidden="true">&#128269;</span>
+          <input type="search" placeholder="Search courses" aria-label="Search courses" />
+        </div>
+        <nav class="nav">
+          <a class="nav__link" href="dashboard.html">Dashboard</a>
+          <a class="nav__link" href="courses.html">Courses</a>
+          <a class="nav__link" href="my-learning.html">My Learning</a>
+          <a class="nav__link" href="instructor.html">Instructor</a>
+          <a class="nav__link" href="cart.html">Cart</a>
+          <a class="nav__link" href="wishlist.html">Wishlist</a>
+        </nav>
+        <button class="avatar"><span>PB</span></button>
+      </div>
+    </header>
+
+    <section class="coming-hero">
+      <div class="coming-hero__inner">
+        <div class="coming-copy">
+          <span class="coming-eyebrow">Coming soon</span>
+          <h1>We are launching soon! Join today for early access.</h1>
+          <p>Get notified the moment our mobile experience goes live and secure priority access to new Winfield and Hatch programs.</p>
+          <form class="coming-form">
+            <input class="coming-input" type="text" placeholder="Name" />
+            <input class="coming-input" type="email" placeholder="Email" />
+            <button class="coming-btn" type="button">Get Early Access</button>
+          </form>
+        </div>
+        <div class="coming-mockup" aria-hidden="true">
+          <div class="phone">
+            <div class="screen">
+              <div class="bubble bubble--wide"></div>
+              <div class="bubble bubble--dark"></div>
+              <div class="bubble bubble--wide"></div>
+              <div class="bubble bubble--dark"></div>
+              <div class="bubble bubble--wide"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="container site-footer__top">
+        <div class="site-footer__grid">
+          <div>
+            <h4>About WBS</h4>
+            <ul>
+              <li><a href="coming-soon.html">Get the app</a></li>
+              <li><a href="#">About us</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Contact us</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Investors</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Discover WBS Online</h4>
+            <ul>
+              <li><a href="coming-soon.html">Get the app</a></li>
+              <li><a href="coming-soon.html">Teach with WBS</a></li>
+              <li><a href="subscriptions.html">Plans &amp; pricing</a></li>
+              <li><a href="coming-soon.html">Affiliate</a></li>
+              <li><a href="help.html">Help &amp; Support</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>WBS for Business</h4>
+            <ul>
+              <li><a href="subscriptions.html">Enterprise learning</a></li>
+              <li><a href="coming-soon.html">Instructor partnerships</a></li>
+              <li><a href="coming-soon.html">Leadership cohorts</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Legal &amp; Accessibility</h4>
+            <ul>
+              <li><a href="coming-soon.html">Accessibility statement</a></li>
+              <li><a href="coming-soon.html">Privacy policy</a></li>
+              <li><a href="coming-soon.html">Sitemap</a></li>
+              <li><a href="coming-soon.html">Terms</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <div class="container site-footer__brandline">
+          <div class="brand">
+            <img src="./assets/img/logo.svg" alt="WBS Online" />
+            <strong>WBS Online</strong>
+          </div>
+          <div>&copy; <span id="year"></span> WBS Online. All rights reserved.</div>
+          <div class="site-footer__links">
+            <a href="coming-soon.html">Cookie settings</a>
+            <a href="coming-soon.html">Privacy</a>
+            <a href="coming-soon.html">Terms</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
