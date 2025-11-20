@@ -629,3 +629,52 @@ a:hover { text-decoration: underline; }
 .landing-card input.fancy-input:focus { border-color: #1d2939; box-shadow: 0 0 0 2px rgba(16,24,40,.18); }
 .landing-card textarea.response-area { width: 100%; border-color: #cfd4e0; border-radius: 6px; min-height: 160px; background: #fff; }
 .landing-card textarea.response-area:focus { border-color: #1d2939; box-shadow: 0 0 0 2px rgba(16,24,40,.18); }
+
+/* Purchase history */
+.order-history {
+  padding: 20px;
+}
+
+.order-history__title {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  color: #0f172a;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.order-table thead th {
+  text-align: left;
+  padding: 12px 14px;
+  color: #0f172a;
+  font-weight: 700;
+  background: #f3f4f6;
+}
+
+.order-table tbody td {
+  padding: 12px 14px;
+  color: #1f2937;
+}
+
+.order-table tbody tr:nth-child(odd) {
+  background: #f8fafc;
+}
+
+.order-table tbody tr:nth-child(even) {
+  background: #eef2f7;
+}
+
+.order-table__link {
+  color: #0e898e;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.order-table__link:hover,
+.order-table__link:focus {
+  text-decoration: underline;
+}
