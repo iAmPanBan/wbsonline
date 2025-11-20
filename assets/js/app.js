@@ -4,6 +4,8 @@
   const qs = (sel, el = document) => el.querySelector(sel);
   const qsa = (sel, el = document) => Array.from(el.querySelectorAll(sel));
 
+  if (!Array.isArray(window.TOP_PROGRAMS)) window.TOP_PROGRAMS = [];
+
   let customCourses = [];
   try {
     customCourses = JSON.parse(localStorage.getItem('instructorCourses') || '[]');
@@ -11,11 +13,7 @@
     customCourses = [];
   }
   if (!Array.isArray(window.COURSES)) window.COURSES = [];
-  customCourses.forEach((course) => {
-    if (!window.COURSES.some((c) => c.id === course.id)) {
-      window.COURSES.push(course);
-    }
-  });
+  const DEFAULT_COVER = './assets/img/placeholder.svg';
 
   function persistCustomCourses() {
     try {
@@ -50,6 +48,35 @@ const formatMeta = (level, lessonsCount) => {
       }
     });
   }
+
+  function courseToProgram(course) {
+    const descriptionSource = course.description || course.subtitle || (course.learnings && course.learnings[0]) || '';
+    const description = descriptionSource || 'Newly published program on WBS Online.';
+    return {
+      title: course.title,
+      provider: course.category || 'WBS Online',
+      category: course.category || course.level || 'General',
+      description,
+      image: course.cover || DEFAULT_COVER,
+      courseId: course.id
+    };
+  }
+
+  function addCourseToCatalog(course) {
+    if (!window.COURSES.some((c) => c.id === course.id)) {
+      window.COURSES.unshift(course);
+    }
+    if (!window.TOP_PROGRAMS.some((p) => p.courseId === course.id)) {
+      window.TOP_PROGRAMS.unshift(courseToProgram(course));
+    }
+    if (course.id && (course.category || course.provider)) {
+      programCategories[course.id] = course.category || course.provider;
+    }
+  }
+
+  customCourses.forEach((course) => {
+    addCourseToCatalog(course);
+  });
 
   const resolveCourseCategory = (course) =>
     course?.category || programCategories[course?.id] || course?.provider || '';
@@ -421,12 +448,7 @@ const formatMeta = (level, lessonsCount) => {
     );
   }
 
-  const publishBtn = byId('publishBtn');
-  if (publishBtn) {
-    publishBtn.addEventListener('click', () => {
-      alert('Course published!');
-    });
-  }
+  // Publish button wired inside instructor init (later)
 
   // Bulk uploader modal
   const bulkBtn = byId('bulkBtn');
@@ -1114,7 +1136,7 @@ const formatMeta = (level, lessonsCount) => {
       const { course } = result;
       customCourses.unshift(course);
       persistCustomCourses();
-      if (!window.COURSES.some((c) => c.id === course.id)) window.COURSES.unshift(course);
+      addCourseToCatalog(course);
       if (typeof renderCourseGrid === 'function') renderCourseGrid();
       renderCreatedCourses();
       showStatus('Course published successfully!', 'success');
