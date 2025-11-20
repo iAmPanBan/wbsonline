@@ -369,6 +369,18 @@ a:hover { text-decoration: underline; }
 .publish-card { max-width: 520px; }
 .publish-body { padding: 10px 0; }
 .publish-actions { display: flex; gap: 10px; margin-top: 12px; }
+.file-picker { width: min(640px, 92vw); }
+.file-picker__body { padding: 10px 0 4px 0; display: grid; gap: 12px; }
+.file-picker__prompt { margin: 0; color: #0f172a; }
+.file-picker__providers { display: flex; flex-wrap: wrap; gap: 10px; }
+.file-picker__pill { padding: 8px 12px; border: 1px dashed #dfe4ec; border-radius: 10px; text-decoration: none; color: #0e898e; font-weight: 600; background: #f9fafb; display: inline-flex; align-items: center; gap: 8px; }
+.file-picker__pill:hover, .file-picker__pill:focus { background: #eef6f6; }
+.file-picker__icon { width: 22px; height: 22px; display: inline-grid; place-items: center; border-radius: 6px; color: #fff; font-size: 12px; font-weight: 700; }
+.file-picker__pill[data-brand="drive"] .file-picker__icon { background: linear-gradient(135deg, #1a73e8, #fbbc05); }
+.file-picker__pill[data-brand="dropbox"] .file-picker__icon { background: #0061ff; }
+.file-picker__pill[data-brand="onedrive"] .file-picker__icon { background: #0a4fb6; }
+.file-picker__pill[data-brand="box"] .file-picker__icon { background: #0075c9; }
+.file-picker__pill[data-brand="link"] .file-picker__icon { background: #0e898e; }
 .btn--danger { color: #b91c1c; border-color: #f3d1d1; }
 .btn--danger:hover, .btn--danger:focus { background: #fef2f2; border-color: #fca5a5; }
 

@@ -108,7 +108,8 @@
                   <div>
                     <p>Upload video lesson</p>
                     <small>MP4, MOV &mdash; Max 500mb</small>
-                    <button type="button" class="btn">Upload video</button>
+                    <button type="button" class="btn" id="curriculumUploadBtn">Upload video</button>
+                    <input type="file" id="curriculumUpload" accept="video/mp4,video/quicktime,video/x-m4v,video/*" style="display:none;" />
                   </div>
                 </div>
                 <div class="curriculum-block">
@@ -305,18 +306,33 @@
       </div>
     </div>
 
-    <div id="bulkModal" class="modal-overlay" aria-hidden="true" role="dialog">
-      <div class="modal-card">
+    <div id="filePickerModal" class="modal-overlay" aria-hidden="true" role="dialog">
+      <div class="modal-card file-picker">
         <div class="modal-header">
-          <h3>Bulk upload files</h3>
+          <h3>Upload media</h3>
+          <button type="button" class="btn btn--ghost" data-filepicker-close aria-label="Close">Close</button>
         </div>
-        <form>
-          <input type="file" multiple />
-          <small>Upload multiple lessons or resources at once.</small>
-        </form>
-        <div class="modal-actions">
-          <button type="button" class="btn" data-close>Cancel</button>
-          <button type="button" class="btn btn--primary">Upload</button>
+        <div class="file-picker__body">
+          <p class="file-picker__prompt">Drop files here, <a href="#" id="filePickerBrowse">browse files</a> or import from:</p>
+          <div class="file-picker__providers">
+            <a class="file-picker__pill" data-brand="drive" href="https://drive.google.com" target="_blank" rel="noopener">
+              <span class="file-picker__icon" aria-hidden="true">G</span>Google Drive
+            </a>
+            <a class="file-picker__pill" data-brand="dropbox" href="https://www.dropbox.com" target="_blank" rel="noopener">
+              <span class="file-picker__icon" aria-hidden="true">D</span>Dropbox
+            </a>
+            <a class="file-picker__pill" data-brand="onedrive" href="https://onedrive.live.com" target="_blank" rel="noopener">
+              <span class="file-picker__icon" aria-hidden="true">O</span>OneDrive
+            </a>
+            <a class="file-picker__pill" data-brand="box" href="https://www.box.com" target="_blank" rel="noopener">
+              <span class="file-picker__icon" aria-hidden="true">B</span>Box
+            </a>
+            <a class="file-picker__pill" data-brand="link" href="#" id="filePickerLink">
+              <span class="file-picker__icon" aria-hidden="true">L</span>Link
+            </a>
+          </div>
+          <input id="filePickerInput" type="file" multiple style="display:none;" />
+          <input id="bulkUploadInput" type="file" multiple style="display:none;" />
         </div>
       </div>
     </div>

@@ -450,20 +450,6 @@ const formatMeta = (level, lessonsCount) => {
 
   // Publish button wired inside instructor init (later)
 
-  // Bulk uploader modal
-  const bulkBtn = byId('bulkBtn');
-  const bulkModal = byId('bulkModal');
-  if (bulkBtn && bulkModal) {
-    const closeModal = () => bulkModal.classList.remove('is-open');
-    bulkBtn.addEventListener('click', () => bulkModal.classList.add('is-open'));
-    bulkModal.addEventListener('click', (e) => {
-      if (e.target === bulkModal || e.target.closest('[data-close]')) closeModal();
-    });
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
-    });
-  }
-
   // Mark complete button
   const markBtn = byId('markComplete');
   if (markBtn) {
@@ -863,6 +849,85 @@ const formatMeta = (level, lessonsCount) => {
     bindFieldEvents();
     initFileUi();
     initCharCounters();
+
+    const filePickerModal = byId('filePickerModal');
+    const filePickerInput = byId('filePickerInput');
+    const bulkUploadInput = byId('bulkUploadInput');
+    const filePickerBrowse = byId('filePickerBrowse');
+    const filePickerLink = byId('filePickerLink');
+    let currentUploadLabel = '';
+    let activeInput = null;
+
+    const handleFileSelection = (input) => {
+      const files = Array.from(input?.files || []);
+      if (files.length) {
+        const names = files.map((f) => f.name).join(', ');
+        showStatus(`${currentUploadLabel} ready: ${names}`, 'success');
+      }
+      closeFilePicker();
+    };
+
+    const openFilePicker = (label, inputNode) => {
+      currentUploadLabel = label || 'Upload';
+      activeInput = inputNode || filePickerInput;
+      if (filePickerModal) filePickerModal.classList.add('is-open');
+    };
+
+    const closeFilePicker = () => {
+      if (filePickerModal) filePickerModal.classList.remove('is-open');
+      if (filePickerInput) filePickerInput.value = '';
+      if (activeInput && activeInput !== filePickerInput) {
+        activeInput.value = '';
+      }
+      activeInput = null;
+    };
+
+    if (filePickerModal) {
+      filePickerModal.addEventListener('click', (e) => {
+        if (e.target === filePickerModal || e.target.closest('[data-filepicker-close]')) {
+          closeFilePicker();
+        }
+      });
+    }
+
+    if (filePickerBrowse) {
+      filePickerBrowse.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetInput = activeInput || filePickerInput;
+        if (targetInput) targetInput.click();
+      });
+    }
+
+    if (filePickerLink) {
+      filePickerLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = window.prompt('Paste a file link (Google Drive, Dropbox, Box, OneDrive, etc.):');
+        if (url) {
+          showStatus(`Link attached: ${url}`, 'success');
+          closeFilePicker();
+        }
+      });
+    }
+
+    if (filePickerInput) {
+      filePickerInput.addEventListener('change', () => handleFileSelection(filePickerInput));
+    }
+    if (bulkUploadInput) {
+      bulkUploadInput.addEventListener('change', () => handleFileSelection(bulkUploadInput));
+    }
+
+    if (filePickerModal) {
+      const providerLinks = Array.from(filePickerModal.querySelectorAll('[data-brand]'));
+      providerLinks.forEach((link) =>
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetInput = activeInput || filePickerInput;
+          const label = link.getAttribute('data-brand') || 'Upload';
+          currentUploadLabel = label.toUpperCase();
+          if (targetInput) targetInput.click();
+        })
+      );
+    }
 
     if (publishBtn) publishBtn.addEventListener('click', handlePublish);
 
@@ -1379,6 +1444,17 @@ const formatMeta = (level, lessonsCount) => {
           publishModal.classList.remove('is-open');
         }
       });
+    }
+
+    const videoBtn = byId('curriculumUploadBtn');
+    const videoInput = byId('curriculumUpload');
+    if (videoBtn) {
+      videoBtn.addEventListener('click', () => openFilePicker('Video upload', videoInput || filePickerInput));
+    }
+
+    const bulkBtn = byId('bulkBtn');
+    if (bulkBtn) {
+      bulkBtn.addEventListener('click', () => openFilePicker('Bulk upload', bulkUploadInput || filePickerInput));
     }
 
     document.addEventListener('click', (e) => {
