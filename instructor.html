@@ -44,7 +44,6 @@
             <li data-target="pane-promotions"><span class="dot"></span>Promotions</li>
             <li data-target="pane-messages"><span class="dot"></span>Course messages</li>
           </ul>
-          <button class="btn btn--primary btn--full">Publish Course</button>
         </aside>
 
         <div class="wizard-content">
@@ -287,6 +286,24 @@
       </div>
 
     </main>
+
+    <div id="publishModal" class="modal-overlay" aria-hidden="true" role="dialog">
+      <div class="modal-card publish-card">
+        <div class="modal-header">
+          <h3 id="publishModalTitle">Course published</h3>
+          <button type="button" class="btn btn--ghost" data-publish-close aria-label="Close">Close</button>
+        </div>
+        <div class="publish-body">
+          <div class="publish-details">
+            <p class="field-note" id="publishModalDesc">Your course is live in the catalog.</p>
+            <div class="publish-actions">
+              <a id="publishPreviewLink" class="btn btn--primary" href="#" target="_blank" rel="noopener">Preview</a>
+              <button id="publishEditBtn" class="btn" type="button">Edit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div id="bulkModal" class="modal-overlay" aria-hidden="true" role="dialog">
       <div class="modal-card">

@@ -1126,13 +1126,13 @@ const formatMeta = (level, lessonsCount) => {
       });
     }
 
-    function handlePublish() {
-      const result = buildCoursePayload();
-      if (result.error) {
-        if (result.pane) setActivePane(result.pane);
-        showStatus(result.error, 'error');
-        return;
-      }
+  function handlePublish() {
+    const result = buildCoursePayload();
+    if (result.error) {
+      if (result.pane) setActivePane(result.pane);
+      showStatus(result.error, 'error');
+      return;
+    }
       const { course } = result;
       customCourses.unshift(course);
       persistCustomCourses();
@@ -1140,6 +1140,7 @@ const formatMeta = (level, lessonsCount) => {
       if (typeof renderCourseGrid === 'function') renderCourseGrid();
       renderCreatedCourses();
       showStatus('Course published successfully!', 'success');
+      showPublishModal(course);
       clearDraft();
       resetWizard();
       setActivePane('pane-basic');
@@ -1281,17 +1282,129 @@ const formatMeta = (level, lessonsCount) => {
         .filter(Boolean);
     }
 
+    function buildCreatedCard(course) {
+      const link = courseLink(course.id);
+      return `
+        <article class="card card--course">
+          <a href="${link}" class="card__media">
+            <img src="${course.cover || DEFAULT_COVER}" alt="${course.title}" />
+          </a>
+          <div class="card__body">
+            <h3 class="card__title"><a href="${link}">${course.title}</a></h3>
+            <p class="card__meta">${formatMeta(course.level, course.lessonsCount)}</p>
+            ${course.description ? `<p class="card__desc">${course.description}</p>` : ''}
+            <div class="card__actions">
+              <a class="btn btn--primary" href="${link}" target="_blank" rel="noopener">Preview</a>
+              <button class="btn btn--ghost" data-edit-course="${course.id}">Edit</button>
+              <button class="btn btn--ghost btn--danger" data-delete-course="${course.id}">Delete</button>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
     function renderCreatedCourses() {
       if (!createdCoursesWrap) return;
       if (!customCourses.length) {
         createdCoursesWrap.innerHTML = '<p class="empty-state">You have not created any courses yet.</p>';
         return;
       }
-      createdCoursesWrap.innerHTML = customCourses
-        .map((course) => courseCard(course, { cta: 'Preview' }))
-        .join('');
+      createdCoursesWrap.innerHTML = customCourses.map((course) => buildCreatedCard(course)).join('');
       syncCommerceButtons();
     }
+
+    function mapCourseToDraft(course) {
+      const draft = Object.assign({}, defaultDraft);
+      draft.landingTitle = course.title || '';
+      draft.landingSubtitle = course.subtitle || '';
+      draft.landingDescription = course.description || '';
+      draft.level = course.level || draft.level;
+      draft.language = course.language || draft.language;
+      draft.category = course.category || draft.category;
+      draft.primaryTopic = course.primaryTopic || '';
+      draft.courseTags = (course.tags || []).join(', ');
+      draft.coverPreview = course.cover || '';
+      draft.price = course.price || '';
+      draft.pricingOption = course.discountType || draft.pricingOption;
+      draft.discountPercent = course.discountPercent || '';
+      draft.promotionTitle = course.promo?.title || '';
+      draft.promotionDiscount = course.promo?.discount || '';
+      (course.learnings || []).forEach((item, idx) => {
+        draft[`learn${idx + 1}`] = item;
+      });
+      (course.prerequisites || []).forEach((item, idx) => {
+        draft[`prerequisites${idx + 1}`] = item;
+      });
+      (course.audience || []).forEach((item, idx) => {
+        draft[`audience${idx + 1}`] = item;
+      });
+      return draft;
+    }
+
+    function loadCourseForEdit(id) {
+      const course = customCourses.find((c) => c.id === id);
+      if (!course) return;
+      courseDraft = mapCourseToDraft(course);
+      resetWizard();
+      setActivePane('pane-basic');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showStatus('Loaded course into the editor. Make your changes and publish again.', 'success');
+    }
+
+    function showPublishModal(course) {
+      const modal = byId('publishModal');
+      if (!modal) return;
+      const titleEl = byId('publishModalTitle');
+      const descEl = byId('publishModalDesc');
+      const previewLink = byId('publishPreviewLink');
+      const editBtn = byId('publishEditBtn');
+      if (titleEl) titleEl.textContent = 'Course published';
+      if (descEl) descEl.textContent = `${course.title} is now live in the catalog.`;
+      if (previewLink) {
+        previewLink.href = courseLink(course.id);
+      }
+      if (editBtn) {
+        editBtn.onclick = () => {
+          modal.classList.remove('is-open');
+          loadCourseForEdit(course.id);
+        };
+      }
+      modal.classList.add('is-open');
+    }
+
+    const publishModal = byId('publishModal');
+    if (publishModal) {
+      publishModal.addEventListener('click', (e) => {
+        if (e.target === publishModal || e.target.closest('[data-publish-close]')) {
+          publishModal.classList.remove('is-open');
+        }
+      });
+    }
+
+    document.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('[data-edit-course]');
+      if (editBtn) {
+        e.preventDefault();
+        loadCourseForEdit(editBtn.getAttribute('data-edit-course'));
+      }
+      const deleteBtn = e.target.closest('[data-delete-course]');
+      if (deleteBtn) {
+        e.preventDefault();
+        const id = deleteBtn.getAttribute('data-delete-course');
+        if (!id) return;
+        customCourses = customCourses.filter((c) => c.id !== id);
+        persistCustomCourses();
+        if (Array.isArray(window.COURSES)) {
+          window.COURSES = window.COURSES.filter((c) => c.id !== id);
+        }
+        if (Array.isArray(window.TOP_PROGRAMS)) {
+          window.TOP_PROGRAMS = window.TOP_PROGRAMS.filter((p) => p.courseId !== id);
+        }
+        renderCreatedCourses();
+        if (typeof renderCourseGrid === 'function') renderCourseGrid();
+        showStatus('Course removed.', 'success');
+      }
+    });
   }
 
   function initProfileTabs() {
