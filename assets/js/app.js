@@ -1450,11 +1450,11 @@ const formatMeta = (level, lessonsCount) => {
       const id = `${slugBase || 'course'}-${Date.now()}`;
       const languageValue = (courseDraft.language || 'english').toString();
       const language = languageValue.charAt(0).toUpperCase() + languageValue.slice(1);
-    const course = {
-      id,
-      title,
-      subtitle: courseDraft.landingSubtitle || '',
-      level: (courseDraft.level || 'beginner').toLowerCase(),
+      const course = {
+        id,
+        title,
+        subtitle: courseDraft.landingSubtitle || '',
+        level: (courseDraft.level || 'beginner').toLowerCase(),
         lessonsCount: Math.max(8, learnings.length * 4),
         description,
         category,
