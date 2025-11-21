@@ -393,6 +393,8 @@ a:hover { text-decoration: underline; }
 .quiz-body { display: grid; gap: 12px; }
 .quiz-options { display: grid; gap: 10px; }
 .quiz-option { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; padding: 8px 10px; border: 1px dashed #dfe4ec; border-radius: 10px; background: #f9fafb; }
+.file-chip--danger { background: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5; }
+.file-chip--danger:hover, .file-chip--danger:focus { border-color: #ef4444; }
 .btn--danger { color: #b91c1c; border-color: #f3d1d1; }
 .btn--danger:hover, .btn--danger:focus { background: #fef2f2; border-color: #fca5a5; }
 

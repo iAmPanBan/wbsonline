@@ -886,8 +886,19 @@ const formatMeta = (level, lessonsCount) => {
     }
     const coverUploadBtn = byId('coverUploadBtn');
     const coverUploadInput = byId('coverUpload');
+    const coverRemoveBtn = byId('coverRemoveBtn');
     if (coverUploadBtn && coverUploadInput) {
       coverUploadBtn.addEventListener('click', () => coverUploadInput.click());
+    }
+    if (coverRemoveBtn) {
+      coverRemoveBtn.addEventListener('click', () => {
+        coverUploadInput.value = '';
+        courseDraft.coverName = '';
+        courseDraft.coverPreview = '';
+        updateFileChip('cover', 'Upload PNG or JPG');
+        updateCoverPreview('', '');
+        saveDraft();
+      });
     }
 
 
