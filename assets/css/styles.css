@@ -388,6 +388,10 @@ a:hover { text-decoration: underline; }
 .file-picker__pill[data-brand="onedrive"] .file-picker__icon { background: #0a4fb6; }
 .file-picker__pill[data-brand="box"] .file-picker__icon { background: #0075c9; }
 .file-picker__pill[data-brand="link"] .file-picker__icon { background: #0e898e; }
+.quiz-card { width: min(700px, 94vw); }
+.quiz-body { display: grid; gap: 12px; }
+.quiz-options { display: grid; gap: 10px; }
+.quiz-option { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; padding: 8px 10px; border: 1px dashed #dfe4ec; border-radius: 10px; background: #f9fafb; }
 .btn--danger { color: #b91c1c; border-color: #f3d1d1; }
 .btn--danger:hover, .btn--danger:focus { background: #fef2f2; border-color: #fca5a5; }
 

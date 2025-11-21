@@ -74,6 +74,20 @@ const formatMeta = (level, lessonsCount) => {
     }
   }
 
+  function resetAddSectionButton() {
+    const addSection = document.getElementById('addModuleBtn');
+    const list = document.getElementById('curriculumList');
+    if (!addSection || !list) return;
+    const wire = () => {
+      const nextIndex = list.querySelectorAll('.curriculum-item').length + 1;
+      addModule(nextIndex);
+      const last = list.lastElementChild;
+      if (last) last.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    addSection.addEventListener('click', wire);
+    window.addModuleFromButton = wire;
+  }
+
   function deleteCourseById(id) {
     if (!id) return;
     customCourses = customCourses.filter((c) => c.id !== id);
@@ -187,6 +201,7 @@ const formatMeta = (level, lessonsCount) => {
       </div>
     `;
     const categoryLabel = resolveCourseCategory(course) || '';
+    const priceLabel = formatPrice(resolveCoursePrice(course));
     return `
       <article class="card card--course" data-level="${course.level}" data-title="${course.title}" data-category="${categoryLabel}">
         <a href="${courseLink(course.id)}" class="card__media">
@@ -194,7 +209,7 @@ const formatMeta = (level, lessonsCount) => {
         </a>
         <div class="card__body">
           <h3 class="card__title"><a href="${courseLink(course.id)}">${course.title}</a></h3>
-          <p class="card__meta">${formatMeta(course.level, course.lessonsCount)}</p>
+          <p class="card__meta">${formatMeta(course.level, course.lessonsCount)} &middot; <strong>${priceLabel}</strong></p>
           ${course.description ? `<p class="card__desc">${course.description}</p>` : ''}
           ${primaryAction}
           ${commerceActions}
@@ -855,14 +870,21 @@ const formatMeta = (level, lessonsCount) => {
     bindFieldEvents();
     initFileUi();
     initCharCounters();
+    try {
     initCurriculum();
-
-    // Clear all previously created courses on load and update catalog listings
-    if (createdCoursesWrap && customCourses.length) {
-      clearAllCustomCourses();
-      renderCreatedCourses();
-      if (typeof renderCourseGrid === 'function') renderCourseGrid();
+    resetAddSectionButton();
+    } catch (err) {
+      // Defensive: log so a failure inside curriculum initialization doesn't break the rest of the instructor UI
+      // This will help surface errors in the browser console for debugging.
+      // eslint-disable-next-line no-console
+      console.error('initCurriculum failed', err);
     }
+    const coverUploadBtn = byId('coverUploadBtn');
+    const coverUploadInput = byId('coverUpload');
+    if (coverUploadBtn && coverUploadInput) {
+      coverUploadBtn.addEventListener('click', () => coverUploadInput.click());
+    }
+
 
     const filePickerModal = byId('filePickerModal');
     const filePickerInput = byId('filePickerInput');
@@ -871,6 +893,18 @@ const formatMeta = (level, lessonsCount) => {
     const filePickerLink = byId('filePickerLink');
     const curriculumList = byId('curriculumList');
     const addModuleBtn = byId('addModuleBtn');
+    const quizModal = byId('quizModal');
+    const quizQuestion = byId('quizQuestion');
+    const quizInputs = [
+      byId('quizAnswer0'),
+      byId('quizAnswer1'),
+      byId('quizAnswer2'),
+      byId('quizAnswer3')
+    ].filter(Boolean);
+    const quizRadioNodes = Array.from(document.querySelectorAll('[name="quizCorrect"]'));
+    const saveQuizBtn = byId('saveQuizBtn');
+    const openQuizModalBtn = byId('openQuizModal');
+    const courseQuizHidden = byId('courseQuiz');
     const baseModuleCount = 4;
     let currentUploadLabel = '';
     let activeInput = null;
@@ -950,6 +984,55 @@ const formatMeta = (level, lessonsCount) => {
       );
     }
 
+    function openQuizModalUI() {
+      if (quizModal) quizModal.classList.add('is-open');
+    }
+
+    function closeQuizModalUI() {
+      if (quizModal) quizModal.classList.remove('is-open');
+    }
+
+    function saveQuiz() {
+      const question = (quizQuestion?.value || '').trim();
+      const answers = quizInputs.map((inp) => (inp?.value || '').trim());
+      const correctNode = quizRadioNodes.find((r) => r.checked);
+      const correctIndex = correctNode ? Number(correctNode.value) : -1;
+      if (!question) {
+        showStatus('Add a quiz question.', 'error');
+        return;
+      }
+      if (answers.filter(Boolean).length < 2) {
+        showStatus('Add at least two answer options.', 'error');
+        return;
+      }
+      if (correctIndex < 0 || !answers[correctIndex]) {
+        showStatus('Select the correct answer.', 'error');
+        return;
+      }
+      const quizPayload = { question, answers, correct: correctIndex };
+      courseDraft.quiz = quizPayload;
+      if (courseQuizHidden) courseQuizHidden.value = JSON.stringify(quizPayload);
+      saveDraft();
+      closeQuizModalUI();
+      showStatus('Quiz saved.', 'success');
+    }
+
+    if (quizModal) {
+      quizModal.addEventListener('click', (e) => {
+        if (e.target === quizModal || e.target.closest('[data-quiz-close]')) {
+          closeQuizModalUI();
+        }
+      });
+    }
+    if (saveQuizBtn) {
+      saveQuizBtn.addEventListener('click', saveQuiz);
+    }
+    if (openQuizModalBtn) {
+      openQuizModalBtn.addEventListener('click', () => {
+        openQuizModalUI();
+      });
+    }
+
     function moduleTemplate(index) {
       return `
         <div class="curriculum-item" data-module="${index}">
@@ -978,13 +1061,16 @@ const formatMeta = (level, lessonsCount) => {
     function ensureModuleCount(count) {
       if (!curriculumList) return;
       const current = curriculumList.querySelectorAll('.curriculum-item').length;
-      for (let i = current + 1; i <= count; i += 1) {
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = moduleTemplate(i);
-        const node = wrapper.firstElementChild;
-        curriculumList.appendChild(node);
-        bindModuleFields(node, i);
-      }
+      for (let i = current + 1; i <= count; i += 1) addModule(i);
+    }
+
+    function addModule(index) {
+      if (!curriculumList) return;
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = moduleTemplate(index);
+      const node = wrapper.firstElementChild;
+      curriculumList.appendChild(node);
+      bindModuleFields(node, index);
     }
 
     function pruneModules() {
@@ -1034,11 +1120,21 @@ const formatMeta = (level, lessonsCount) => {
       ensureModuleCount(baseModuleCount);
       attachModulePickerHandlers();
       if (addModuleBtn && curriculumList) {
-        addModuleBtn.addEventListener('click', () => {
-          const nextIndex = curriculumList.querySelectorAll('.curriculum-item').length + 1;
-          ensureModuleCount(nextIndex);
-        });
-      }
+          addModuleBtn.addEventListener('click', () => {
+            try {
+              // quick debug trace so clicks are visible in the console
+              // eslint-disable-next-line no-console
+              console.log('addModuleBtn clicked');
+              const nextIndex = curriculumList.querySelectorAll('.curriculum-item').length + 1;
+              addModule(nextIndex);
+              const last = curriculumList.lastElementChild;
+              if (last) last.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (err) {
+              // eslint-disable-next-line no-console
+              console.error('Error in addModuleBtn click handler', err);
+            }
+          });
+        }
       qsa('[data-picker-target]').forEach((btn) => {
         const targetId = btn.getAttribute('data-picker-target');
         const input = targetId ? byId(targetId) : null;
@@ -1349,11 +1445,11 @@ const formatMeta = (level, lessonsCount) => {
       const id = `${slugBase || 'course'}-${Date.now()}`;
       const languageValue = (courseDraft.language || 'english').toString();
       const language = languageValue.charAt(0).toUpperCase() + languageValue.slice(1);
-      const course = {
-        id,
-        title,
-        subtitle: courseDraft.landingSubtitle || '',
-        level: (courseDraft.level || 'beginner').toLowerCase(),
+    const course = {
+      id,
+      title,
+      subtitle: courseDraft.landingSubtitle || '',
+      level: (courseDraft.level || 'beginner').toLowerCase(),
         lessonsCount: Math.max(8, learnings.length * 4),
         description,
         category,
@@ -1370,10 +1466,21 @@ const formatMeta = (level, lessonsCount) => {
         discountPercent: Number(courseDraft.discountPercent || 0),
         syllabus: collectModules(),
         resources: collectResources(),
-        promo: {
-          title: courseDraft.promotionTitle || '',
-          discount: Number(courseDraft.promotionDiscount || 0)
-        },
+      courseQuiz: (() => {
+        if (courseDraft.courseQuiz) {
+          try {
+            return JSON.parse(courseDraft.courseQuiz);
+          } catch (e) {
+            // ignore parse errors, treat as no quiz
+            return null;
+          }
+        }
+        return courseDraft.quiz || null;
+      })(),
+      promo: {
+        title: courseDraft.promotionTitle || '',
+        discount: Number(courseDraft.promotionDiscount || 0)
+      },
         messages: {
           welcome: courseDraft.welcomeMessage || '',
           congrats: courseDraft.congratsMessage || ''
@@ -1562,6 +1669,9 @@ const formatMeta = (level, lessonsCount) => {
         draft.resourceNotes = course.resources.notes || '';
         draft.resourceCheats = course.resources.cheats || '';
         draft.courseQuiz = course.resources.quiz || '';
+      }
+      if (course.courseQuiz) {
+        draft.courseQuiz = JSON.stringify(course.courseQuiz);
       }
       return draft;
     }

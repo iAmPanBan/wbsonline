@@ -78,6 +78,16 @@
                 <small class="field-note">Description should have minimum 200 words.</small>
               </div>
 
+              <div class="upload-grid">
+                <label class="field-label file-field">
+                  Course thumbnail
+                  <input class="image-drop" id="coverUpload" type="file" accept="image/*" data-field="coverName" data-file-label="cover" style="display:none;" />
+                  <button type="button" class="file-chip" id="coverUploadBtn" data-file-label="cover">Upload PNG or JPG</button>
+                  <div class="cover-preview" id="coverPreview"><span>No image uploaded</span></div>
+                  <small>Upload 750x422 cover image. JPG or PNG.</small>
+                </label>
+              </div>
+
               <button class="btn btn--primary js-save-next" type="button" data-current="pane-basic">Save &amp; Continue</button>
               <div id="courseStatus" class="status" aria-live="polite"></div>
             </form>
@@ -147,14 +157,14 @@
               </div>
             </div>
           </div>
-          <button type="button" class="btn btn--ghost" id="addModuleBtn">+ Add section</button>
+          <button type="button" class="btn btn--ghost" id="addModuleBtn" onclick="addModuleFromButton()">+ Add section</button>
 
           <div class="curriculum-resources">
             <h3>Quiz</h3>
             <div class="resource-row">
               <span>Quiz</span>
-              <button type="button" class="btn btn--secondary" data-picker-target="courseQuiz">Create quiz</button>
-              <input type="file" id="courseQuiz" data-field="courseQuiz" accept=".pdf,.doc,.docx,.txt" style="display:none;" />
+              <button type="button" class="btn btn--secondary" id="openQuizModal">Create quiz</button>
+              <input type="hidden" id="courseQuiz" data-field="courseQuiz" />
             </div>
           </div>
 
@@ -294,6 +304,41 @@
           </div>
           <input id="filePickerInput" type="file" multiple style="display:none;" />
           <input id="bulkUploadInput" type="file" multiple style="display:none;" />
+        </div>
+      </div>
+    </div>
+
+    <div id="quizModal" class="modal-overlay" aria-hidden="true" role="dialog">
+      <div class="modal-card quiz-card">
+        <div class="modal-header">
+          <h3>Create quiz</h3>
+          <button type="button" class="btn btn--ghost" data-quiz-close aria-label="Close">Close</button>
+        </div>
+        <div class="quiz-body">
+          <label class="field-label">Question
+            <textarea id="quizQuestion" class="response-area" placeholder="Enter your question"></textarea>
+          </label>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <input type="radio" name="quizCorrect" value="0" aria-label="Mark A as correct" />
+              <input type="text" class="fancy-input" id="quizAnswer0" placeholder="Option A" />
+            </div>
+            <div class="quiz-option">
+              <input type="radio" name="quizCorrect" value="1" aria-label="Mark B as correct" />
+              <input type="text" class="fancy-input" id="quizAnswer1" placeholder="Option B" />
+            </div>
+            <div class="quiz-option">
+              <input type="radio" name="quizCorrect" value="2" aria-label="Mark C as correct" />
+              <input type="text" class="fancy-input" id="quizAnswer2" placeholder="Option C" />
+            </div>
+            <div class="quiz-option">
+              <input type="radio" name="quizCorrect" value="3" aria-label="Mark D as correct" />
+              <input type="text" class="fancy-input" id="quizAnswer3" placeholder="Option D" />
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn--primary" id="saveQuizBtn">Save quiz</button>
+          </div>
         </div>
       </div>
     </div>
