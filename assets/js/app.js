@@ -74,6 +74,26 @@ const formatMeta = (level, lessonsCount) => {
     }
   }
 
+  function deleteCourseById(id) {
+    if (!id) return;
+    customCourses = customCourses.filter((c) => c.id !== id);
+    persistCustomCourses();
+    if (Array.isArray(window.COURSES)) {
+      window.COURSES = window.COURSES.filter((c) => c.id !== id);
+    }
+    if (Array.isArray(window.TOP_PROGRAMS)) {
+      window.TOP_PROGRAMS = window.TOP_PROGRAMS.filter((p) => p.courseId !== id);
+    }
+  }
+
+  function clearAllCustomCourses() {
+    const ids = new Set(customCourses.map((c) => c.id));
+    customCourses = [];
+    persistCustomCourses();
+    window.COURSES = Array.isArray(window.COURSES) ? window.COURSES.filter((c) => !ids.has(c.id)) : [];
+    window.TOP_PROGRAMS = Array.isArray(window.TOP_PROGRAMS) ? window.TOP_PROGRAMS.filter((p) => !ids.has(p.courseId)) : [];
+  }
+
   customCourses.forEach((course) => {
     addCourseToCatalog(course);
   });
@@ -440,7 +460,7 @@ const formatMeta = (level, lessonsCount) => {
     saveButtons.forEach((btn) =>
       btn.addEventListener('click', () => {
         const current = byId(btn.getAttribute('data-current'));
-        const order = ['pane-basic', 'pane-content', 'pane-landing', 'pane-fee', 'pane-promotions', 'pane-messages'];
+        const order = ['pane-basic', 'pane-content', 'pane-landing', 'pane-fee', 'pane-messages'];
         const nextId = order[order.indexOf(btn.getAttribute('data-current')) + 1];
         setActivePane(nextId || 'pane-messages');
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -805,23 +825,9 @@ const formatMeta = (level, lessonsCount) => {
 
     let fieldsBound = false;
     const dynamicFieldConfigs = {
-      learn: {
-        prefix: 'learn',
-        min: 4,
-        itemSelector: '.response-field',
-        fieldSelector: '.response-input',
-        counterSelector: '.counter'
-      },
-      prerequisites: {
-        prefix: 'prerequisites',
-        min: 1,
-        itemSelector: 'textarea.response-area[data-field^="prerequisites"]'
-      },
-      audience: {
-        prefix: 'audience',
-        min: 1,
-        itemSelector: 'textarea.response-area[data-field^="audience"]'
-      }
+      learn: { prefix: 'learn', min: 0, itemSelector: '.response-field', fieldSelector: '.response-input', counterSelector: '.counter' },
+      prerequisites: { prefix: 'prerequisites', min: 0, itemSelector: 'textarea.response-area[data-field^="prerequisites"]' },
+      audience: { prefix: 'audience', min: 0, itemSelector: 'textarea.response-area[data-field^="audience"]' }
     };
 
     const statusTargets = [byId('courseStatus'), byId('publishStatus')].filter(Boolean);
@@ -834,7 +840,7 @@ const formatMeta = (level, lessonsCount) => {
     const defaultDraft = {
       language: 'english',
       level: 'beginner',
-      category: 'Design',
+      category: 'Executive Programs',
       pricingOption: 'none',
       coverName: '',
       coverPreview: '',
@@ -849,12 +855,23 @@ const formatMeta = (level, lessonsCount) => {
     bindFieldEvents();
     initFileUi();
     initCharCounters();
+    initCurriculum();
+
+    // Clear all previously created courses on load and update catalog listings
+    if (createdCoursesWrap && customCourses.length) {
+      clearAllCustomCourses();
+      renderCreatedCourses();
+      if (typeof renderCourseGrid === 'function') renderCourseGrid();
+    }
 
     const filePickerModal = byId('filePickerModal');
     const filePickerInput = byId('filePickerInput');
     const bulkUploadInput = byId('bulkUploadInput');
     const filePickerBrowse = byId('filePickerBrowse');
     const filePickerLink = byId('filePickerLink');
+    const curriculumList = byId('curriculumList');
+    const addModuleBtn = byId('addModuleBtn');
+    const baseModuleCount = 4;
     let currentUploadLabel = '';
     let activeInput = null;
 
@@ -871,14 +888,18 @@ const formatMeta = (level, lessonsCount) => {
       currentUploadLabel = label || 'Upload';
       activeInput = inputNode || filePickerInput;
       if (filePickerModal) filePickerModal.classList.add('is-open');
+      if (activeInput) {
+        const handler = () => {
+          handleFileSelection(activeInput);
+          activeInput.removeEventListener('change', handler);
+        };
+        activeInput.addEventListener('change', handler, { once: true });
+      }
     };
 
     const closeFilePicker = () => {
       if (filePickerModal) filePickerModal.classList.remove('is-open');
       if (filePickerInput) filePickerInput.value = '';
-      if (activeInput && activeInput !== filePickerInput) {
-        activeInput.value = '';
-      }
       activeInput = null;
     };
 
@@ -927,6 +948,102 @@ const formatMeta = (level, lessonsCount) => {
           if (targetInput) targetInput.click();
         })
       );
+    }
+
+    function moduleTemplate(index) {
+      return `
+        <div class="curriculum-item" data-module="${index}">
+          <div class="curriculum-icon">${index}</div>
+          <div class="curriculum-fields">
+            <label class="field-label">Section title
+              <input class="fancy-input" type="text" data-field="moduleTitle${index}" placeholder="Section ${index} title" />
+            </label>
+            <div class="file-row">
+              <span class="field-note">Upload video lesson</span>
+              <button type="button" class="btn btn--secondary" data-picker-target="moduleVideo${index}">Upload video</button>
+              <input type="file" id="moduleVideo${index}" data-field="moduleVideo${index}" accept="video/*" style="display:none;" />
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function bindModuleFields(el, idx) {
+      const title = el.querySelector(`[data-field="moduleTitle${idx}"]`);
+      const video = el.querySelector(`#moduleVideo${idx}`);
+      if (title) bindField(title);
+      if (video) bindField(video);
+    }
+
+    function ensureModuleCount(count) {
+      if (!curriculumList) return;
+      const current = curriculumList.querySelectorAll('.curriculum-item').length;
+      for (let i = current + 1; i <= count; i += 1) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = moduleTemplate(i);
+        const node = wrapper.firstElementChild;
+        curriculumList.appendChild(node);
+        bindModuleFields(node, i);
+      }
+    }
+
+    function pruneModules() {
+      if (!curriculumList) return;
+      const items = Array.from(curriculumList.querySelectorAll('.curriculum-item'));
+      items.forEach((item, idx) => {
+        const moduleIdx = Number(item.getAttribute('data-module')) || idx + 1;
+        const hasData = Boolean(courseDraft[`moduleTitle${moduleIdx}`] || courseDraft[`moduleVideo${moduleIdx}`]);
+        if (moduleIdx > baseModuleCount && !hasData) {
+          delete courseDraft[`moduleTitle${moduleIdx}`];
+          delete courseDraft[`moduleVideo${moduleIdx}`];
+          item.remove();
+        }
+      });
+      const remaining = Array.from(curriculumList.querySelectorAll('.curriculum-item'));
+      remaining.forEach((item, idx) => {
+        item.setAttribute('data-module', idx + 1);
+        const icon = item.querySelector('.curriculum-icon');
+        if (icon) icon.textContent = idx + 1;
+      });
+    }
+
+    function applyModuleDraftValues() {
+      if (!curriculumList) return;
+      const items = Array.from(curriculumList.querySelectorAll('.curriculum-item'));
+      items.forEach((item) => {
+        const moduleIdx = Number(item.getAttribute('data-module')) || 0;
+        const titleInput = item.querySelector(`[data-field="moduleTitle${moduleIdx}"]`);
+        if (titleInput) titleInput.value = courseDraft[`moduleTitle${moduleIdx}`] || '';
+      });
+    }
+
+    function attachModulePickerHandlers() {
+      document.addEventListener('click', (e) => {
+        const trigger = e.target.closest('[data-picker-target]');
+        if (!trigger) return;
+        const targetId = trigger.getAttribute('data-picker-target');
+        const input = targetId ? byId(targetId) : null;
+        if (input) {
+          const label = trigger.textContent || 'Upload';
+          openFilePicker(label.trim(), input);
+        }
+      });
+    }
+
+    function initCurriculum() {
+      ensureModuleCount(baseModuleCount);
+      attachModulePickerHandlers();
+      if (addModuleBtn && curriculumList) {
+        addModuleBtn.addEventListener('click', () => {
+          const nextIndex = curriculumList.querySelectorAll('.curriculum-item').length + 1;
+          ensureModuleCount(nextIndex);
+        });
+      }
+      qsa('[data-picker-target]').forEach((btn) => {
+        const targetId = btn.getAttribute('data-picker-target');
+        const input = targetId ? byId(targetId) : null;
+        if (input) bindField(input);
+      });
     }
 
     if (publishBtn) publishBtn.addEventListener('click', handlePublish);
@@ -1191,11 +1308,11 @@ const formatMeta = (level, lessonsCount) => {
       });
     }
 
-  function handlePublish() {
-    const result = buildCoursePayload();
-    if (result.error) {
-      if (result.pane) setActivePane(result.pane);
-      showStatus(result.error, 'error');
+    function handlePublish() {
+      const result = buildCoursePayload();
+      if (result.error) {
+        if (result.pane) setActivePane(result.pane);
+        showStatus(result.error, 'error');
       return;
     }
       const { course } = result;
@@ -1217,10 +1334,9 @@ const formatMeta = (level, lessonsCount) => {
       if (!title) return { error: 'Add a course title before publishing.', pane: 'pane-landing' };
       const prerequisitesList = collectSequentialFields('prerequisites');
       const audienceList = collectSequentialFields('audience');
-      const description = (courseDraft.landingDescription || prerequisitesList[0] || audienceList[0] || '').trim();
+      const description = (courseDraft.landingDescription || '').trim();
       if (!description) return { error: 'Provide a short description so learners know what to expect.', pane: 'pane-landing' };
       const learnings = collectSequentialFields('learn');
-      if (!learnings.length) return { error: 'Share at least one learning outcome in Intended learners.', pane: 'pane-basic' };
       const category = (courseDraft.categoryCustom || courseDraft.category || 'General').trim();
       const tags = (courseDraft.courseTags || '')
         .split(',')
@@ -1252,6 +1368,8 @@ const formatMeta = (level, lessonsCount) => {
         price: courseDraft.pricingOption === 'free' ? 0 : Number(courseDraft.price || 0),
         discountType: courseDraft.pricingOption || 'none',
         discountPercent: Number(courseDraft.discountPercent || 0),
+        syllabus: collectModules(),
+        resources: collectResources(),
         promo: {
           title: courseDraft.promotionTitle || '',
           discount: Number(courseDraft.promotionDiscount || 0)
@@ -1293,6 +1411,7 @@ const formatMeta = (level, lessonsCount) => {
 
     function resetWizard() {
       resetDynamicGroups();
+      pruneModules();
       wizardFields.forEach((field) => {
         const key = field.getAttribute('data-field');
         if (!key) return;
@@ -1345,6 +1464,37 @@ const formatMeta = (level, lessonsCount) => {
         .sort((a, b) => a.index - b.index)
         .map((entry) => (entry.value || '').trim())
         .filter(Boolean);
+    }
+
+    function collectModules() {
+      const modules = [];
+      const titles = collectSequentialFields('moduleTitle');
+      // Need indexes to align with videos
+      const titleMap = {};
+      Object.keys(courseDraft).forEach((key) => {
+        const match = key.match(/^moduleTitle(\d+)$/);
+        if (match) titleMap[Number(match[1])] = (courseDraft[key] || '').trim();
+      });
+      Object.keys(titleMap)
+        .map((num) => Number(num))
+        .sort((a, b) => a - b)
+        .forEach((num) => {
+          const title = titleMap[num];
+          const video = courseDraft[`moduleVideo${num}`] || '';
+          if (title || video) {
+            modules.push({ title: title || `Section ${modules.length + 1}`, video });
+          }
+        });
+      return modules;
+    }
+
+    function collectResources() {
+      return {
+        slides: courseDraft.resourceSlides || '',
+        notes: courseDraft.resourceNotes || '',
+        cheats: courseDraft.resourceCheats || '',
+        quiz: courseDraft.courseQuiz || ''
+      };
     }
 
     function buildCreatedCard(course) {
@@ -1403,6 +1553,16 @@ const formatMeta = (level, lessonsCount) => {
       (course.audience || []).forEach((item, idx) => {
         draft[`audience${idx + 1}`] = item;
       });
+      (course.syllabus || []).forEach((item, idx) => {
+        draft[`moduleTitle${idx + 1}`] = item?.title || '';
+        draft[`moduleVideo${idx + 1}`] = item?.video || '';
+      });
+      if (course.resources) {
+        draft.resourceSlides = course.resources.slides || '';
+        draft.resourceNotes = course.resources.notes || '';
+        draft.resourceCheats = course.resources.cheats || '';
+        draft.courseQuiz = course.resources.quiz || '';
+      }
       return draft;
     }
 
@@ -1410,7 +1570,10 @@ const formatMeta = (level, lessonsCount) => {
       const course = customCourses.find((c) => c.id === id);
       if (!course) return;
       courseDraft = mapCourseToDraft(course);
+      const moduleCount = Math.max(baseModuleCount, (course.syllabus || []).length);
+      ensureModuleCount(moduleCount);
       resetWizard();
+      applyModuleDraftValues();
       setActivePane('pane-basic');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       showStatus('Loaded course into the editor. Make your changes and publish again.', 'success');
@@ -1457,28 +1620,36 @@ const formatMeta = (level, lessonsCount) => {
       bulkBtn.addEventListener('click', () => openFilePicker('Bulk upload', bulkUploadInput || filePickerInput));
     }
 
+    const clearCreatedBtn = byId('clearCreatedBtn');
+    if (clearCreatedBtn) {
+      clearCreatedBtn.addEventListener('click', () => {
+        clearAllCustomCourses();
+        renderCreatedCourses();
+        if (typeof renderCourseGrid === 'function') renderCourseGrid();
+        showStatus('All created courses have been removed.', 'success');
+      });
+    }
+
+    const handleDeleteClick = (id) => {
+      deleteCourseById(id);
+      renderCreatedCourses();
+      if (typeof renderCourseGrid === 'function') renderCourseGrid();
+      showStatus('Course removed.', 'success');
+    };
+
     document.addEventListener('click', (e) => {
       const editBtn = e.target.closest('[data-edit-course]');
       if (editBtn) {
         e.preventDefault();
         loadCourseForEdit(editBtn.getAttribute('data-edit-course'));
+        return;
       }
       const deleteBtn = e.target.closest('[data-delete-course]');
       if (deleteBtn) {
         e.preventDefault();
         const id = deleteBtn.getAttribute('data-delete-course');
         if (!id) return;
-        customCourses = customCourses.filter((c) => c.id !== id);
-        persistCustomCourses();
-        if (Array.isArray(window.COURSES)) {
-          window.COURSES = window.COURSES.filter((c) => c.id !== id);
-        }
-        if (Array.isArray(window.TOP_PROGRAMS)) {
-          window.TOP_PROGRAMS = window.TOP_PROGRAMS.filter((p) => p.courseId !== id);
-        }
-        renderCreatedCourses();
-        if (typeof renderCourseGrid === 'function') renderCourseGrid();
-        showStatus('Course removed.', 'success');
+        handleDeleteClick(id);
       }
     });
   }

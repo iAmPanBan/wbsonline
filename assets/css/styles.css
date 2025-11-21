@@ -358,6 +358,13 @@ a:hover { text-decoration: underline; }
 .curriculum-block { display: flex; gap: 16px; align-items: center; padding: 18px; border: 1px solid #dfe4ec; border-radius: 16px; background: #f9fafb; }
 .curriculum-icon { width: 48px; height: 48px; border-radius: 12px; background: #eef2ff; color: #4338ca; display: grid; place-items: center; font-size: 24px; }
 .curriculum-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.curriculum-item { display: flex; gap: 14px; padding: 16px; border: 1px solid #dfe4ec; border-radius: 14px; background: #f9fafb; }
+.curriculum-item .curriculum-icon { width: 40px; height: 40px; border-radius: 10px; background: #0e898e; color: #fff; font-weight: 700; font-size: 16px; display: grid; place-items: center; }
+.curriculum-fields { flex: 1; display: grid; gap: 10px; }
+.curriculum-fields .fancy-input { width: 100%; }
+.file-row { display: flex; align-items: center; gap: 10px; }
+.curriculum-resources { margin-top: 16px; padding: 14px; border: 1px dashed #dfe4ec; border-radius: 12px; background: #f9fafb; display: grid; gap: 8px; }
+.resource-row { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px; }
 
 .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.55); display: none; align-items: center; justify-content: center; z-index: 40; }
 .modal-overlay.is-open { display: flex; }
