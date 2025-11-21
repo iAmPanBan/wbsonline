@@ -242,6 +242,11 @@ const formatMeta = (level, lessonsCount) => {
       event.preventDefault();
       removeFromCollection('wishlist', removeWishlistBtn.getAttribute('data-remove-wishlist'));
     }
+    const addSectionTrigger = event.target.closest('[data-add-section],#addModuleBtn');
+    if (addSectionTrigger && typeof window.addModuleFromButton === 'function') {
+      event.preventDefault();
+      window.addModuleFromButton();
+    }
   });
 
   function addCourseToCollection(type, courseId) {
@@ -1039,7 +1044,7 @@ const formatMeta = (level, lessonsCount) => {
           <div class="curriculum-icon">${index}</div>
           <div class="curriculum-fields">
             <label class="field-label">Section title
-              <input class="fancy-input" type="text" data-field="moduleTitle${index}" placeholder="Section ${index} title" />
+              <input class="fancy-input" type="text" data-field="moduleTitle${index}" placeholder="e.g. Capstone presentation" />
             </label>
             <div class="file-row">
               <span class="field-note">Upload video lesson</span>
