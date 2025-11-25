@@ -1,0 +1,57 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  gap: 1rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.brand img {
+  width: 42px;
+  height: 42px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.content {
+  display: grid;
+  gap: 2rem;
+}
+
+.footer {
+  margin-top: 3rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid #1e293b;
+  color: #94a3b8;
+}
+
+.status {
+  padding: 1rem;
+  border-radius: 8px;
+  background: #0f172a;
+  border: 1px solid #1e293b;
+}
+
+.status--error {
+  border-color: #f87171;
+  color: #fecdd3;
+}

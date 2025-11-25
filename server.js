@@ -1,3 +1,4 @@
+<<<<<<< ours
 const http = require('http');
 const fs = require('fs').promises;
 const path = require('path');
@@ -104,4 +105,50 @@ const server = http.createServer((req, res) => {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+=======
+import express from 'express';
+import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const loadJson = (file) => {
+  const filepath = path.join(__dirname, 'data', file);
+  const content = fs.readFileSync(filepath, 'utf-8');
+  return JSON.parse(content);
+};
+
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok' });
+});
+
+app.get('/api/hero', (_req, res) => {
+  try {
+    const hero = loadJson('hero.json');
+    res.json(hero);
+  } catch (error) {
+    res.status(500).json({ message: 'Unable to load hero data', error: error.message });
+  }
+});
+
+app.get('/api/courses', (_req, res) => {
+  try {
+    const courses = loadJson('courses.json');
+    res.json(courses);
+  } catch (error) {
+    res.status(500).json({ message: 'Unable to load courses', error: error.message });
+  }
+});
+
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+  console.log(`API server ready on port ${port}`);
+>>>>>>> theirs
 });
