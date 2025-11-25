@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Course Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        color: #0f172a;
+        background: #f8fafc;
+      }
+
+      body {
+        margin: 0;
+      }
+
+      header {
+        background: linear-gradient(135deg, #0f172a, #1d4ed8);
+        color: #fff;
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+      }
+
+      header h1 {
+        margin: 0 0 0.5rem;
+        font-size: 2rem;
+        letter-spacing: -0.02em;
+      }
+
+      header p {
+        margin: 0;
+        opacity: 0.85;
+      }
+
+      main {
+        display: grid;
+        gap: 1rem;
+        padding: 1.5rem;
+        grid-template-columns: 1fr;
+      }
+
+      .layout {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+
+      .card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .card img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        background: #cbd5e1;
+      }
+
+      .card-content {
+        padding: 1rem;
+        display: grid;
+        gap: 0.6rem;
+      }
+
+      .card h3 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .muted {
+        color: #475569;
+        font-size: 0.95rem;
+        margin: 0;
+      }
+
+      .form-card label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+
+      .form-card input,
+      .form-card textarea {
+        width: 100%;
+        padding: 0.65rem 0.75rem;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font: inherit;
+        box-sizing: border-box;
+      }
+
+      .form-card button {
+        background: #1d4ed8;
+        color: #fff;
+        border: none;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 700;
+        margin-top: 0.75rem;
+        transition: background 0.2s ease;
+      }
+
+      .form-card button:hover {
+        background: #1e3a8a;
+      }
+
+      .status {
+        padding: 0.75rem 1rem;
+        background: #eef2ff;
+        border: 1px solid #c7d2fe;
+        color: #312e81;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Winfield Strategy Academy</h1>
+      <p>Now running on a React-powered UI backed by a Node.js JSON database.</p>
+    </header>
+
+    <main>
+      <div class="layout">
+        <div class="card form-card">
+          <div class="card-content">
+            <h3>Add a new course</h3>
+            <label for="title">Title</label>
+            <input id="title" placeholder="Intro to Strategy" />
+            <label for="description">Description</label>
+            <textarea id="description" rows="3" placeholder="What should learners know?"></textarea>
+            <label for="image">Image URL (optional)</label>
+            <input id="image" placeholder="https://example.com/course.png" />
+            <button id="submit">Save course</button>
+            <div id="status" class="status" style="display: none"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-content">
+            <h3>Live database</h3>
+            <p class="muted">All courses are stored in <code>data/courses.json</code> via the Node.js server.</p>
+            <p class="muted">Try adding a course and refresh the page to see it persist.</p>
+          </div>
+        </div>
+      </div>
+
+      <section id="app"></section>
+    </main>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script type="text/babel">
+      const { useEffect, useState } = React;
+
+      function CourseCard({ course }) {
+        return (
+          <div className="card">
+            {course.image ? <img src={course.image} alt={course.title} /> : <div style={{ height: 160, background: '#e2e8f0' }} />}
+            <div className="card-content">
+              <h3>{course.title}</h3>
+              <p className="muted">{course.description}</p>
+              <p className="muted">ID: {course.id}</p>
+            </div>
+          </div>
+        );
+      }
+
+      function CoursesGrid() {
+        const [courses, setCourses] = useState([]);
+        const [loading, setLoading] = useState(true);
+        const [error, setError] = useState('');
+
+        useEffect(() => {
+          fetch('/api/courses')
+            .then((res) => res.json())
+            .then((data) => setCourses(data))
+            .catch(() => setError('Failed to load courses'))
+            .finally(() => setLoading(false));
+        }, []);
+
+        if (loading) {
+          return <p className="muted">Loading courses…</p>;
+        }
+
+        if (error) {
+          return <p className="muted">{error}</p>;
+        }
+
+        return (
+          <div className="layout">
+            {courses.map((course) => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+          </div>
+        );
+      }
+
+      function hydrateForm() {
+        const status = document.getElementById('status');
+        const submit = document.getElementById('submit');
+        const titleInput = document.getElementById('title');
+        const descriptionInput = document.getElementById('description');
+        const imageInput = document.getElementById('image');
+
+        submit.addEventListener('click', () => {
+          const payload = {
+            title: titleInput.value.trim(),
+            description: descriptionInput.value.trim(),
+            image: imageInput.value.trim(),
+          };
+
+          status.style.display = 'block';
+          status.textContent = 'Saving…';
+
+          fetch('/api/courses', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          })
+            .then((res) => res.json())
+            .then((body) => {
+              if (body.message && !body.id) {
+                status.textContent = body.message;
+              } else {
+                status.textContent = `Saved ${body.title}`;
+                titleInput.value = '';
+                descriptionInput.value = '';
+                imageInput.value = '';
+              }
+            })
+            .catch(() => {
+              status.textContent = 'Failed to save course';
+            });
+        });
+      }
+
+      const container = document.getElementById('app');
+      const root = ReactDOM.createRoot(container);
+      root.render(<CoursesGrid />);
+      hydrateForm();
+    </script>
+  </body>
+</html>
