@@ -1,4 +1,3 @@
-<<<<<<< ours
 const http = require('http');
 const fs = require('fs').promises;
 const path = require('path');
@@ -105,7 +104,6 @@ const server = http.createServer((req, res) => {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
-=======
 import express from 'express';
 import cors from 'cors';
 import fs from 'fs';
@@ -150,5 +148,4 @@ app.get('/api/courses', (_req, res) => {
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log(`API server ready on port ${port}`);
->>>>>>> theirs
 });
